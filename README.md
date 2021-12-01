@@ -9,4 +9,4 @@ I have no idea if I can devote as much time to solving puzzles as last year and 
 
 Things I **L**earned, **R**evised or **I**mproved at in 2021:
 
-* [Day 1](01/d01.py): I don't know, list comprehensions and list slicing in Python(**R**), perhaps?
+* [Day 1](01/d01.py): zip(**R**) and list comprehensions(**R**)
