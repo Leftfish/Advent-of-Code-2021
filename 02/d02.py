@@ -1,6 +1,5 @@
 print('Day 2 of Advent of Code!')
 
-
 def calculate_position(data):
     position = complex(0, 0)
     moves = data.splitlines()

@@ -11,3 +11,4 @@ Things I **L**earned, **R**evised or **I**mproved at in 2021:
 
 * [Day 1](01/d01.py): zip(**R**) and list comprehensions(**R**)
 * [Day 2](02/d02.py): complex numbers in Python(**L**)
+* [Day 3](03/d03.py): basic set operations in Python(**R**)
