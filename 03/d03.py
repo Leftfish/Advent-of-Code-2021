@@ -1,9 +1,11 @@
 print('Day 3 of Advent of Code!')
 
 from collections import defaultdict
+from operator import ge, lt
+from typing import Callable, Dict, List, Set
 
 
-def count_ones(bits: list, bit_size: int) -> defaultdict:
+def count_ones(bits: List[str], bit_size: int) -> defaultdict:
     positions = defaultdict(int)
     for number in bits:
         for pos in range(bit_size):
@@ -12,7 +14,7 @@ def count_ones(bits: list, bit_size: int) -> defaultdict:
     return positions
 
 
-def calculate_power(bits: list, bit_size: int) -> int:
+def calculate_power(bits: List[str], bit_size: int) -> int:
     gamma = ''
     bit_frequency = count_ones(bits, bit_size)
 
@@ -21,18 +23,15 @@ def calculate_power(bits: list, bit_size: int) -> int:
             gamma += '1'
         else:
             gamma += '0'
+
     epsilon = ''.join('1' if digit == '0' else '0' for digit in gamma)
 
     return int(gamma, 2) * int(epsilon, 2)
 
 
-def filter_life_support_candidates(candidates: set, bit_frequency: dict, pos: int, mode: int) -> set:
+def filter_life_support_candidates(candidates: Set[str], bit_frequency: Dict[int, int], pos: int, comparator: Callable) -> set:
     filtered_candidates = set()
-
-    if mode == 1:
-        flag = '1' if bit_frequency[pos] >= len(candidates)/2 else '0'
-    elif mode == 0:
-        flag = '1' if bit_frequency[pos] < len(candidates)/2 else '0'
+    flag = '1' if comparator(bit_frequency[pos], len(candidates)/2) else '0'    
 
     for number in candidates:
         if number[pos] == flag:
@@ -41,8 +40,8 @@ def filter_life_support_candidates(candidates: set, bit_frequency: dict, pos: in
     return filtered_candidates
 
 
-def calculate_life_support(bits: list, bit_size: int) -> int:
-    oxygen, co2 = 1, 0
+def calculate_life_support(bits: List[str], bit_size: int) -> int:
+    oxygen, co2 = ge, lt
 
     positions_oxy = count_ones(bits, bit_size)
     positions_co2 = count_ones(bits, bit_size)
