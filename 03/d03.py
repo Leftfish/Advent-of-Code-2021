@@ -29,7 +29,7 @@ def calculate_power(bits: List[str], bit_size: int) -> int:
     return int(gamma, 2) * int(epsilon, 2)
 
 
-def filter_life_support_candidates(candidates: Set[str], bit_frequency: Dict[int, int], pos: int, comparator: Callable) -> set:
+def filter_life_support_candidates(candidates: Set[str], bit_frequency: Dict[int, int], pos: int, comparator: Callable[[int, int], bool]) -> set:
     filtered_candidates = set()
     flag = '1' if comparator(bit_frequency[pos], len(candidates)/2) else '0'    
 
