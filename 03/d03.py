@@ -29,7 +29,7 @@ def calculate_power(bits: List[str], bit_size: int) -> int:
     return int(gamma, 2) * int(epsilon, 2)
 
 
-def filter_life_support_candidates(candidates: Set[str], bit_frequency: DefaultDict[int, int], pos: int, comparator: Callable[[int, int], bool]) -> set:
+def filter_life_support_candidates(candidates: Set[str], bit_frequency: DefaultDict[int, int], pos: int, comparator: Callable[[int, int], bool]) -> Set[str]:
     flag = '1' if comparator(bit_frequency[pos], len(candidates)/2) else '0'        
     return set(number for number in candidates if number[pos] == flag)
     #return set(filter(lambda number: number[pos] == flag, candidates))
@@ -49,7 +49,7 @@ def get_life_support_rating(bits: List[str], bit_size: int, system: Callable[[in
     return int(candidates.pop(), 2)
 
 
-def calculate_life_support(bits: List[str], bit_size: int, oxygen: Callable[[int, int], bool], co2: Callable[[int, int], bool]):
+def calculate_life_support(bits: List[str], bit_size: int, oxygen: Callable[[int, int], bool], co2: Callable[[int, int], bool]) -> int:
     return get_life_support_rating(bits, bit_size, oxygen) * get_life_support_rating(bits, bit_size, co2)
 
 test_data = '''00100
