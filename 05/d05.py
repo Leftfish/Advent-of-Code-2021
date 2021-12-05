@@ -21,28 +21,28 @@ def draw_lines(lines: list, count_diagonal=False) -> DefaultDict:
     for line in lines:
         start_x, stop_x = line[0][0], line[1][0]
         start_y, stop_y = line[0][1], line[1][1]
-        current_x, current_y = start_x, start_y
+        x, y = start_x, start_y
         dx = -1 if start_x > stop_x else 1
         dy = -1 if start_y > stop_y else 1
 
         if start_x == stop_x:
-            occupied_points[(current_x, current_y)] += 1
-            while current_y != stop_y:
-                current_y += dy
-                occupied_points[(start_x, current_y)] += 1
+            occupied_points[(x, y)] += 1
+            while y != stop_y:
+                y += dy
+                occupied_points[(x, y)] += 1
         
         elif start_y == stop_y:            
-            occupied_points[(current_x, current_y)] += 1
-            while current_x != stop_x:
-                current_x += dx
-                occupied_points[(current_x, start_y)] += 1
+            occupied_points[(x, y)] += 1
+            while x != stop_x:
+                x += dx
+                occupied_points[(x, y)] += 1
 
         elif count_diagonal:
-            occupied_points[(current_x, current_y)] += 1
-            while current_x != stop_x:
-                current_x += dx
-                current_y += dy
-                occupied_points[(current_x, current_y)] += 1
+            occupied_points[(x, y)] += 1
+            while x != stop_x:
+                x += dx
+                y += dy
+                occupied_points[(x, y)] += 1
     
     return occupied_points
 
