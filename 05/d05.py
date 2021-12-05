@@ -1,8 +1,14 @@
 from collections import defaultdict
 from typing import DefaultDict
+import matplotlib.pyplot as plt
+import random
 import re
 
 print('Day 5 of Advent of Code!')
+
+SHADES_OF_GRAY = ['#' + 3 * hex(i)[2:] for i in range(40, 200, 10)]
+PLOT_SIZE = 800
+DPI = 96
 
 
 def get_lines(data: str) -> set:
@@ -15,7 +21,7 @@ def get_lines(data: str) -> set:
     return lines
 
 
-def draw_lines(lines: list, count_diagonal=False) -> DefaultDict:
+def find_occupied_points(lines: list, count_diagonal=False) -> DefaultDict:
     occupied_points = defaultdict(int)
 
     for line in lines:
@@ -51,6 +57,22 @@ def count_intersections(occupied_points: DefaultDict) -> int:
     return sum(1 for intersections in occupied_points.values() if intersections > 1)
 
 
+def draw_lines(lines: set) -> None:
+    plt.figure(num='Hydrothermal vents', figsize=(PLOT_SIZE/DPI, PLOT_SIZE/DPI), dpi=DPI)
+
+    ax=plt.axes()
+    ax.set_facecolor('#000000')
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+
+    for line in lines:
+        xs = (line[0][0], line[1][0])
+        ys = (line[0][1], line[1][1])
+        plt.plot(xs, ys,color=random.choice(SHADES_OF_GRAY), linewidth=1)
+
+    plt.show()
+
+
 test_data = '''0,9 -> 5,9
 8,0 -> 0,8
 9,4 -> 3,4
@@ -64,12 +86,13 @@ test_data = '''0,9 -> 5,9
 
 print('Tests...')
 lines = get_lines(test_data)
-print('Only horizontal and vertical:', count_intersections(draw_lines(lines)) == 5)
-print('Horizontal, vertical and diagonal:', count_intersections(draw_lines(lines, True)) == 12)
+print('Only horizontal and vertical:', count_intersections(find_occupied_points(lines)) == 5)
+print('Horizontal, vertical and diagonal:', count_intersections(find_occupied_points(lines, True)) == 12)
 print('---------------------')
 
 print('Solution...')
 with open('inp', mode='r') as inp:
     lines = get_lines(inp.read())
-    print('Only horizontal and vertical:', count_intersections(draw_lines(lines)))
-    print('Horizontal, vertical and diagonal:', count_intersections(draw_lines(lines, True)))
+    print('Only horizontal and vertical:', count_intersections(find_occupied_points(lines)))
+    print('Horizontal, vertical and diagonal:', count_intersections(find_occupied_points(lines, True)))
+    draw_lines(lines)

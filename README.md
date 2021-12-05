@@ -13,4 +13,4 @@ Things I **L**earned, **R**evised or **I**mproved at in 2021:
 * [Day 2](02/d02.py): complex numbers in Python(**L**)
 * [Day 3](03/d03.py): basic set operations in Python(**R**), typing hints in Python(**I**) and operator module(**R**)
 * [Day 4](04/d04.py): parsing strings(**R**)
-* [Day 5](05/d05.py): regular expressions(**R**)
+* [Day 5](05/d05.py): regular expressions(**R**) and drawing plots in matplotlib(**L**)
