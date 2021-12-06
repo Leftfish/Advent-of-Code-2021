@@ -12,10 +12,9 @@ def get_fish(data: str) -> deque:
 
 
 def simulate_day(fish_population: deque) -> deque:
-    to_breed = fish_population[0]
-    fish_population.rotate(-1)
-    fish_population[6] += to_breed
-    fish_population[8] = to_breed
+    to_breed = fish_population.popleft()
+    fish_population[-2] += to_breed
+    fish_population.append(to_breed)
     return fish_population
 
 
