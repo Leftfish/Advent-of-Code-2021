@@ -15,11 +15,16 @@ def crabs_naive(crabs, max_position, cost_counter):
             minimum = cost
     return minimum
 
+def crabs_by_median(crabs):
+    median = sorted(crabs)[len(crabs)//2]
+    return sum(abs(median - crab) for crab in crabs)
+
 raw_data = '''16,1,2,0,4,2,7,1,2,14'''
 
 print('Tests...')
 crabs = list(map(int, raw_data.split(',')))
 print('Cheap crabs:', int(crabs_naive(crabs, max(crabs), lambda a, b: abs(b - a))) == 37)
+print('Cheap crabs (non naive):', int(crabs_by_median(crabs)) == 37)
 print('Expensive crabs:', (int(crabs_naive(crabs, max(crabs), sum_range)) == 168))
 print('---------------------')
 
@@ -28,4 +33,5 @@ with open('inp', mode='r') as inp:
     raw_data = inp.read()
     crabs = list(map(int, raw_data.split(',')))
     print('Cheap crabs:', int(crabs_naive(crabs, max(crabs), lambda a, b: abs(b - a))))
+    print('Cheap crabs (non naive):', int(crabs_by_median(crabs)))
     print('Expensive crabs:', (int(crabs_naive(crabs, max(crabs), sum_range))))
