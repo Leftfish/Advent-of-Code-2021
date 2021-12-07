@@ -15,4 +15,4 @@ Things I **L**earned, **R**evised or **I**mproved at in 2021:
 * [Day 4](04/d04.py): parsing strings(**R**)
 * [Day 5](05/d05.py): regular expressions(**R**) and drawing plots in matplotlib(**L**)
 * [Day 6](06/d06.py): deques(**R**)
-* [Day 7](07/d07.py): Euler's formula(**R**) and I got to know that statistics module is thing in Pyton(**L**)
+* [Day 7](07/d07.py): triangle numbers formula(**R**) and I got to know that statistics module is thing in Pyton(**L**)
