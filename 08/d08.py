@@ -1,86 +1,71 @@
+from typing import Dict, List, Set, Tuple
 import re
 
 
 print('Day 8 of Advent of Code!')
 
 
-def process_line(line):
+def process_line(line: str) -> Tuple[List[str], List[str]]:
     processed = re.findall(r'(\w+)', line)
     raw_input = processed[:10]
     raw_output = processed[10:]
     return raw_input, raw_output
 
 
-def get_all_digits(line):
-    inp, out = process_line(line)
+def get_all_digits(raw_digits: List[str]) -> List[Set[chr]]:
     digits = []
-    for digit in inp+out:
+    for digit in raw_digits:
         sd = set(digit)
         if sd not in digits:
             digits.append(sd)
     return digits
 
 
-def count_easy_digits(lines):
+def count_easy_digits(lines: str) -> int:
     return sum(1 for line in lines for digit in process_line(line)[1] if len(digit) in (2, 3, 4, 7))
 
 
-def decode_digits(line):
+def decode_digits(raw_digits: List[str]) -> Dict[frozenset, chr]:
     digits = {}
-    all_digits = sorted(get_all_digits(line),  key = lambda s: len(s))
-    
+    all_digits = sorted(get_all_digits(raw_digits), key=lambda s: len(s))
+
     ONE = frozenset(all_digits[0])
     FOUR = frozenset(all_digits[2])
     SEVEN = frozenset(all_digits[1])
     EIGHT = frozenset(all_digits[-1])
-    
+
     digits[ONE] = '1'
-    digits[SEVEN] = '7'
     digits[FOUR] = '4'
+    digits[SEVEN] = '7'
     digits[EIGHT] = '8'
 
-    five_digits, six_digits = all_digits[3:6], all_digits[6:9]
-
-    for number in six_digits:
-        if FOUR <= number:
+    for number in all_digits[3:9]:
+        if len(number) == 5 and len(ONE & number) == 2:
+            digits[frozenset(number)] = '3'
+        elif len(number) == 5 and len(FOUR & number) == 3:
+            digits[frozenset(number)] = '5'
+        elif len(number) == 5:
+            digits[frozenset(number)] = '2'
+        elif len(number) == 6 and len(FOUR & number) == 4:
             digits[frozenset(number)] = '9'
-            six_digits.remove(number)
-    
-    for number in six_digits:
-        if ONE <= number:
-            ZERO = frozenset(number)
-            digits[ZERO] = '0'
-            six_digits.remove(number)
-            SIX = frozenset(six_digits.pop())
-            digits[SIX] = '6'
-    
-    for number in five_digits:
-        if ONE <= number:
-            THREE = frozenset(number)
-            digits[THREE] = '3'
-            five_digits.remove(number)
-    
-    for number in five_digits:
-        if number <= SIX:
-            FIVE = frozenset(number)
-            digits[FIVE] = '5'
-            five_digits.remove(number)
-            TWO = frozenset(five_digits.pop())
-            digits[TWO] = '2'
+        elif len(number) == 6 and len(SEVEN & number) == 2:
+            digits[frozenset(number)] = '6'
+        else:
+            digits[frozenset(number)] = '0'
 
     return digits
 
 
 def get_output_number(line):
-    digits = decode_digits(line)
-    _, raw_output = process_line(line)
+    raw_input, raw_output = process_line(line)
+    digits = decode_digits(raw_input + raw_output)
     processed_output = ''.join(digits[frozenset(digit)] for digit in raw_output)
-
     return int(processed_output)
 
 
 def sum_outputs(lines):
     return sum(get_output_number(line) for line in lines)
+
 
 raw_data = '''be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe
 edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec | fcgedb cgb dgebacf gc
