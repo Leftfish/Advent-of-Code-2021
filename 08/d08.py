@@ -56,14 +56,14 @@ def decode_digits(raw_digits: List[str]) -> Dict[frozenset, chr]:
     return digits
 
 
-def get_output_number(line):
+def get_output_number(line: str) -> int:
     raw_input, raw_output = process_line(line)
     digits = decode_digits(raw_input + raw_output)
     processed_output = ''.join(digits[frozenset(digit)] for digit in raw_output)
     return int(processed_output)
 
 
-def sum_outputs(lines):
+def sum_outputs(lines: List[str]) -> int:
     return sum(get_output_number(line) for line in lines)
 
 
