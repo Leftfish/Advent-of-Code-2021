@@ -16,3 +16,4 @@ Things I **L**earned, **R**evised or **I**mproved at in 2021:
 * [Day 5](05/d05.py): regular expressions(**R**) and drawing plots in matplotlib(**L**)
 * [Day 6](06/d06.py): deques(**R**)
 * [Day 7](07/d07.py): Gauss's formula(**R**) and I got to know that statistics module is thing in Pyton(**L**)
+* [Day 8](08/d08.py): Set operations(**R**) and frozenset in Pyton(**L**)
