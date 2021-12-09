@@ -9,7 +9,7 @@ def get_height_map(data):
     return height_map
 
 
-def get_risk_level(height_map, i, j):
+def calculate_area_risk_level(height_map, i, j):
     for (adj_i, adj_j) in [(i-1, j), (i+1, j), (i,j-1), (i, j+1)]:
         if adj_i < 0 or adj_i >= len(height_map) or adj_j < 0 or adj_j >= len(height_map[0]): 
             continue
@@ -18,8 +18,8 @@ def get_risk_level(height_map, i, j):
     return 1 + height_map[i][j]
 
 
-def calculate_risk_level(height_map):
-    return sum(get_risk_level(height_map, i, j) for i in range(len(height_map)) for j in range(len(height_map[0])))
+def calculate_total_risk_level(height_map):
+    return sum(calculate_area_risk_level(height_map, i, j) for i in range(len(height_map)) for j in range(len(height_map[0])))
 
 
 def calculate_basin_area_dfs(height_map, visited, i, j):
@@ -34,12 +34,12 @@ def calculate_basin_area_dfs(height_map, visited, i, j):
         return (1 + calculate_basin_area_dfs(height_map, visited, i+1, j) + calculate_basin_area_dfs(height_map, visited, i-1, j) + calculate_basin_area_dfs(height_map, visited, i, j+1) + calculate_basin_area_dfs(height_map, visited, i, j-1))
 
 
-def find_basin_areas_dfs(height_map):
+def find_all_areas_dfs(height_map):
     visited = set()
     return sorted([calculate_basin_area_dfs(height_map, visited, i, j) for i in range(len(height_map)) for j in range(len(height_map[0]))])
 
 
-def find_basin_areas_bfs(height_map):
+def find_all_areas_bfs(height_map):
     # iterate through 2d matrix
     # if the current area is not visited and is in basin (value not 9): perform BFS
     # iterative BFS: start a queue, add current to queue if not already visited, increment area
@@ -84,10 +84,10 @@ raw_data = '''2199943210
 
 print('Tests...')
 height_map = get_height_map(raw_data)
-basin_areas = find_basin_areas_dfs(height_map)
-print('Risk level:', calculate_risk_level(height_map) == 15)
+basin_areas = find_all_areas_dfs(height_map)
+print('Risk level:', calculate_total_risk_level(height_map) == 15)
 print('Product of three biggest basin areas (DFS):', basin_areas[-3] * basin_areas[-2] * basin_areas[-1] == 1134)
-basin_areas = find_basin_areas_bfs(height_map)
+basin_areas = find_all_areas_bfs(height_map)
 print('Product of three biggest basin areas (BFS):', basin_areas[-3] * basin_areas[-2] * basin_areas[-1] == 1134)
 print('---------------------')
 
@@ -95,8 +95,8 @@ print('Solution...')
 with open('inp', mode='r') as inp:
     raw_data = inp.read()  
     height_map = get_height_map(raw_data)
-    basin_areas = find_basin_areas_dfs(height_map)
-    print('Risk level:', calculate_risk_level(height_map))
+    basin_areas = find_all_areas_dfs(height_map)
+    print('Risk level:', calculate_total_risk_level(height_map))
     print('Product of three biggest basin areas (DFS):', basin_areas[-3] * basin_areas[-2] * basin_areas[-1])
-    basin_areas = find_basin_areas_bfs(height_map)
+    basin_areas = find_all_areas_bfs(height_map)
     print('Product of three biggest basin areas (BFS):', basin_areas[-3] * basin_areas[-2] * basin_areas[-1])
