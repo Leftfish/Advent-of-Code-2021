@@ -17,3 +17,4 @@ Things I **L**earned, **R**evised or **I**mproved at in 2021:
 * [Day 6](06/d06.py): deques(**R**)
 * [Day 7](07/d07.py): Gauss's formula(**R**) and I got to know that statistics module is thing in Pyton(**L**)
 * [Day 8](08/d08.py): Set operations(**R**) and frozenset in Pyton(**L**)
+* [Day 9](09/d09.py): recursive DFS(**R**) to find islands in a 2D matrix (**L**)
