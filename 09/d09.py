@@ -22,7 +22,7 @@ def calculate_total_risk_level(height_map):
     return sum(calculate_area_risk_level(height_map, i, j) for i in range(len(height_map)) for j in range(len(height_map[0])))
 
 
-def calculate_basin_area_dfs(height_map, visited, i, j):
+def calc_areas_dfs(height_map, visited, i, j):
     # this is essentially the problem of finding islands in a 2D matrix, but we check their sizes instead of counting them
     # if no adjacent up/down/left/right or adjacent visited or adjacent not in basin (value 9): return 0 (add no area)
     # otherwise: add the current to visited and basin size = current (which is 1) plus DFS up/down/left/right
@@ -31,12 +31,12 @@ def calculate_basin_area_dfs(height_map, visited, i, j):
         return 0
     else:
         visited.add((i, j))
-        return (1 + calculate_basin_area_dfs(height_map, visited, i+1, j) + calculate_basin_area_dfs(height_map, visited, i-1, j) + calculate_basin_area_dfs(height_map, visited, i, j+1) + calculate_basin_area_dfs(height_map, visited, i, j-1))
+        return (1 + calc_areas_dfs(height_map, visited, i+1, j) + calc_areas_dfs(height_map, visited, i-1, j) + calc_areas_dfs(height_map, visited, i, j+1) + calc_areas_dfs(height_map, visited, i, j-1))
 
 
 def find_all_areas_dfs(height_map):
     visited = set()
-    return sorted([calculate_basin_area_dfs(height_map, visited, i, j) for i in range(len(height_map)) for j in range(len(height_map[0]))])
+    return sorted([calc_areas_dfs(height_map, visited, i, j) for i in range(len(height_map)) for j in range(len(height_map[0]))])
 
 
 def find_all_areas_bfs(height_map):
