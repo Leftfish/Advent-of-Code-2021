@@ -19,3 +19,4 @@ Things I **L**earned, **R**evised or **I**mproved at in 2021:
 * [Day 8](08/d08.py): set operations(**R**) and frozenset in Pyton(**L**)
 * [Day 9](09/d09.py): using iterative BFS (**R**) and recursive DFS(**R**) to find islands in a 2D matrix (**L**)
 * [Day 10](10/d10.py): using stacks(**R**)
+* [Day 11](11/d11.py): some very basic OOP principles(**R**) but the code needs a lot of cleaning up
