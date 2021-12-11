@@ -6,11 +6,13 @@ print('Day 11 of Advent of Code!')
 
 ADJACENT = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
 FLASHPOINT = 9
-ANIMATION_STEP = 0.01
-COLORS = {}
+
+ANIMATION_STEP = 0.25
+ANIMATION_OCTOPUS = '@'
+ANIMATION_COLORS = {}
 for value, color in enumerate(range(237, 247)):
-    COLORS[value] = color
-GLOW = 118
+    ANIMATION_COLORS[value] = color
+ANIMATION_GLOW = 118
 #color tester
 #for i in range(256): print(f'\x1b[38;5;{i}m' + f'{i}')
 
@@ -74,7 +76,7 @@ class Game:
     def _find_synchro_flash(self) -> bool:
         return sum(octopus.value for line in self.board for octopus in line) == 0
 
-    def step(self, with_vis=False) -> None:
+    def step(self, with_vis=False, vis_with_numbers=False) -> None:
         self._increment_all()
         to_flash = self._find_ready_to_flash()
 
@@ -84,8 +86,8 @@ class Game:
 
         if with_vis:
             print('\n\n')
-            self.draw_board()
-            info = f'\x1b[0mTicks: {self.ticks}\nFlashes: {self.flashes}\n'
+            self.draw_board(vis_with_numbers)
+            info = f'\x1b[0mSteps: {self.ticks}\nFlashes: {self.flashes}\n'
             info += f'Flashes after 100 steps: {self.after_hundred if self.after_hundred else "Not yet reached!"}\n'
             info += f'First synchro: {self.first_synchro if self.first_synchro else "Not yet!"}'
             print(info)
@@ -95,14 +97,14 @@ class Game:
         self._reset_all_ready()
         self.ticks += 1
 
-    def draw_board(self) -> None:
-        draw = [[octopus.get_colored_octopus() for octopus in line] for line in self.board]
+    def draw_board(self, vis_with_numbers=False) -> None:
+        draw = [[octopus.get_colored_octopus(vis_with_numbers) for octopus in line] for line in self.board]
         for line in draw:
             print(''.join(line))
 
-    def run_simulation(self, steps, with_vis=False) -> None:
+    def run_simulation(self, steps, with_vis=False, vis_with_numbers=False) -> None:
         for i in range(steps+1):
-            self.step(with_vis)
+            self.step(with_vis, vis_with_numbers)
 
             if with_vis and self.ticks <= steps:
                 os.system("cls") if os.name == "nt" else os.system("clear")
@@ -148,12 +150,15 @@ class Octopus:
     def __repr__(self) -> str:
         return str(self.value)
 
-    def get_colored_octopus(self) -> str:
+    def get_colored_octopus(self, vis_with_numbers=False) -> str:
+        octopus = ANIMATION_OCTOPUS
+        if vis_with_numbers and not self.flashing:
+            octopus = str(self.value)
         if self.flashing:
-            return f'\x1b[38;5;{GLOW}m' + '@'
+            return f'\x1b[38;5;{ANIMATION_GLOW}m' + octopus
         else:
-            return f'\x1b[38;5;{COLORS[self.value]}m' + '@'
-
+            return f'\x1b[38;5;{ANIMATION_COLORS[self.value]}m' + octopus
+                
 
 raw_data = '''5483143223
 2745854711
@@ -169,4 +174,6 @@ raw_data = '''5483143223
 with open('inp', mode='r') as inp:
     raw_data = inp.read()
     G = Game(raw_data.splitlines())
-    G.run_simulation(600, True)
+    with_vis, vis_with_numbers = True, False
+    G.run_simulation(600, with_vis, vis_with_numbers)
+    print(f'{G.after_hundred} flashes after 100 steps, first synchro after {G.first_synchro}.')
