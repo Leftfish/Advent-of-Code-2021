@@ -9,15 +9,11 @@ print('Day 13 of Advent of Code!')
 def parse_data(data):
     raw_points, raw_instructions = data.split('\n\n')
     regex = r'fold along (\w+)=(\d+)'
-    points = set()
+    points = {tuple(map(int, raw_point.split(','))): 1 for raw_point in raw_points.splitlines()}
     instructions = list()
 
-    for rp in raw_points.splitlines():
-        coords = tuple(map(int, rp.split(',')))
-        points.add(coords)
-
-    for ri in raw_instructions.splitlines():
-        instruction = re.findall(regex, ri)[0]
+    for raw_instruction in raw_instructions.splitlines():
+        instruction = re.findall(regex, raw_instruction)[0]
         instructions.append((instruction[0], int(instruction[1])))
     
     return points, instructions
@@ -26,7 +22,7 @@ def make_paper(points):
     height = max(pt[0] for pt in points) + 1
     width = max(pt[1] for pt in points) + 1
     paper = np.zeros((width, height))
-    for point in points:
+    for point in points.keys():
         y, x = point[0], point[1]
         paper[x][y] = 1
     return paper
@@ -53,23 +49,15 @@ def fold(paper, instruction):
 
 def print_paper(paper):
     for line in paper:
-        line = ['#' if char == 1 else ' 'for char in line]
-        print(''.join(line))
+        print(''.join(['#' if char == 1 else ' 'for char in line]))
 
-def solve(paper, instructions):
-        for i, instruction in enumerate(instructions):
-            paper = fold(paper, instruction)
-            if i == 0:
-                print(f'Points after first fold: {sum(sum(int(c) for c in line) for line in paper)}')
-        print('Paper after folding:')
-        print_paper(paper)
-
-
-def points_to_dict(points):
-    dict_points = dict()
-    for point in points:
-        dict_points[point] = 1
-    return dict_points
+def solve_with_arrays(paper, instructions):
+    for i, instruction in enumerate(instructions):
+        paper = fold(paper, instruction)
+        if i == 0:
+            print(f'Points after first fold: {sum(sum(int(c) for c in line) for line in paper)}')
+    print('Paper after folding:')
+    print_paper(paper)
 
 def fold_without_drawing(points, axis, line):
     new_points = copy(points)
@@ -93,15 +81,14 @@ def print_from_points(points):
         y, x = point[0], point[1]
         paper[x][y] = 1
     for line in paper:
-        line = ['#' if char == 1 else ' 'for char in line]
-        print(''.join(line))
+        print(''.join(['#' if char == 1 else ' 'for char in line]))
 
-def solve_without_drawing(points, instructions):
+def solve_with_dictionary(points, instructions):
     for i, instruction in enumerate(instructions):
         axis, line = instruction[0], instruction[1]
         points = fold_without_drawing(points, axis, line)
         if i == 0:
-                print(f'Points after first fold: {len(points)}')
+            print(f'Points after first fold: {len(points)}')
     print('Paper after folding:')
     print_from_points(points)
 
@@ -128,18 +115,18 @@ fold along y=7
 fold along x=5'''
 
 print('Tests...')
-print('Solving the hard way - with a 2D array...')
 points, instructions = parse_data(raw_data)
-solve(make_paper(points), instructions)
+print('Solving the hard way - with a 2D array...')
+solve_with_arrays(make_paper(points), instructions)
 print('Solving the easy way - with a dictionary of points...')
-solve_without_drawing(points_to_dict(points), instructions)
+solve_with_dictionary(points, instructions)
 print('---------------------')
 
 print('Solution...')
 with open('inp', mode='r') as inp:
     raw_data = inp.read()
-    print('Solving the hard way - with a 2D array...')
     points, instructions = parse_data(raw_data)
-    solve(make_paper(points), instructions)
+    print('Solving the hard way - with a 2D array...')
+    solve_with_arrays(make_paper(points), instructions)
     print('Solving the easy way - with a dictionary of points...')
-    solve_without_drawing(points_to_dict(points), instructions)
+    solve_with_dictionary(points, instructions)
