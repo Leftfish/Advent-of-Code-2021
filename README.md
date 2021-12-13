@@ -21,4 +21,4 @@ Things I **L**earned, **R**evised or **I**mproved at in 2021:
 * [Day 10](10/d10.py): using stacks(**R**)
 * [Day 11](11/d11.py): some very basic OOP principles(**R**) but the code needs a lot of cleaning up
 * [Day 12](12/d12.py): DFS(**I**) and "yield from" in Python (**L**)
-* [Day 13](13/d13.py): slicing 2d NumPy arrays (**L**)
+* [Day 13](13/d13.py): slicing 2d NumPy arrays (**L**) and avoiding 2d arrays altogether thanks to dictionaries or sets (**I**)
