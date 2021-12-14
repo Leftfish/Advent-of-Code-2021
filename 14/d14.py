@@ -1,7 +1,58 @@
 import re
 from collections import defaultdict
+from copy import copy
 
 print('Day 14 of Advent of Code!')
+
+def parse_data(data):
+    initial, raw_insertions = data.split('\n\n')
+    insertions = defaultdict(str)
+    pairs = defaultdict(int)
+    regex = r'(\w+) -> (\w+)'
+
+    for insertion in raw_insertions.splitlines():
+        parsed = re.findall(regex, insertion)[0]
+        insertions[parsed[0]] = parsed[1]
+
+    raw_pairs = [initial[i:i+2] for i in range(len(initial))]
+
+    for pair in raw_pairs:
+        if len(pair) == 2:
+            pairs[pair] += 1
+
+    return pairs, insertions
+
+def split_pair(pair, instructions):
+    first = pair[0] + instructions[pair]
+    second = first[1] + pair[1]
+    return first, second
+
+def insert(pairs, instructions):
+    new_pairs = defaultdict(int)
+
+    for pair in pairs:
+        if pairs[pair] > 0:
+            first, second = split_pair(pair, instructions)
+            new_pairs[first] += pairs[pair]
+            new_pairs[second] += pairs[pair]
+
+    return new_pairs
+
+def count_elements(pairs):
+    element_counter = defaultdict(int)
+
+    for pair in pairs:
+        element_counter[pair[1]] += pairs[pair]
+
+    return element_counter
+
+def solve(pairs, instructions, steps):
+    for _ in range(steps):
+        pairs = insert(pairs, instructions)
+
+    elements = sorted(count_elements(pairs).values())
+
+    return elements[-1] - elements[0]
 
 raw_data = '''NNCB
 
@@ -22,76 +73,15 @@ BC -> B
 CC -> N
 CN -> C'''
 
-class Element:
-    def __init__(self, val, next=None):
-        self.val = val
-        self.next = next
-    
-    def __repr__(self):
-        return str(self.val)
-
-class Polymer:
-    def __init__(self, data):
-        elements = list(data)
-        self.head = Element(elements[0])
-        current = self.head
-        for element in elements[1:]:
-            new_element = Element(element)
-            current.next = new_element
-            current = new_element
-    
-    def __repr__(self):
-        current = self.head
-        elements = []
-        while current is not None:
-            elements.append(current.val)
-            current = current.next
-        return "".join(elements)
-
-    def insert_between(self, instructions):
-        first = self.head
-        second = self.head.next
-        while second:
-            pair = first.val + second.val
-            value_to_insert = instructions.get(pair)
-            if value_to_insert:
-                new_element = Element(value_to_insert)
-            first.next = new_element
-            first = second
-            new_element.next = second
-            second = second.next
-        
-    def count_elements(self):
-        current = self.head
-        element_counter = defaultdict(int)
-        while current is not None:
-            element_counter[current.val] += 1
-            current = current.next
-        return element_counter
-
-def parse_data(data):
-    initial, raw_insertions = data.split('\n\n')
-    insertions = dict()
-    regex = r'(\w+) -> (\w+)'
-    for insertion in raw_insertions.splitlines():
-        parsed = re.findall(regex, insertion)[0]
-        insertions[parsed[0]] = parsed[1]
-    polymer = Polymer(initial)
-    return polymer, insertions
-
-poly, inserts = parse_data(raw_data)
-for _ in range(5):
-    poly.insert_between(inserts)
-    print(poly)
-    print()
-counter = sorted(list(poly.count_elements().values()))
-print(counter[-1] - counter[0])
-
 print('Tests...')
+poly, inserts = parse_data(raw_data)
+print('Most common - least common after 10 insertions:', solve(poly, inserts, 10) == 1588)
+print('Most common - least common after 40 insertions:', solve(poly, inserts, 40) == 2188189693529)
 print('---------------------')
 
 print('Solution...')
 with open('inp', mode='r') as inp:
     raw_data = inp.read()
-    #poly, inserts = parse_data(raw_data)
-    
+    poly, inserts = parse_data(raw_data)
+    print('Most common - least common after 10 insertions:', solve(poly, inserts, 10))
+    print('Most common - least common after 40 insertions:', solve(poly, inserts, 40))
