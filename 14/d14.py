@@ -1,6 +1,5 @@
 import re
 from collections import defaultdict
-from copy import copy
 
 print('Day 14 of Advent of Code!')
 
