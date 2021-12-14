@@ -1,5 +1,5 @@
 import re
-from collections import defaultdict
+from collections import Counter, defaultdict
 
 print('Day 14 of Advent of Code!')
 
@@ -7,6 +7,7 @@ def parse_data(data):
     initial, raw_insertions = data.split('\n\n')
     insertions = defaultdict(str)
     pairs = defaultdict(int)
+    element_counter = Counter(initial)
     regex = r'(\w+) -> (\w+)'
 
     for insertion in raw_insertions.splitlines():
@@ -19,14 +20,14 @@ def parse_data(data):
         if len(pair) == 2:
             pairs[pair] += 1
 
-    return pairs, insertions
+    return pairs, insertions, element_counter
 
 def split_pair(pair, instructions):
     first = pair[0] + instructions[pair]
     second = first[1] + pair[1]
     return first, second
 
-def insert(pairs, instructions):
+def insert(pairs, instructions, element_counter):
     new_pairs = defaultdict(int)
 
     for pair in pairs:
@@ -34,24 +35,18 @@ def insert(pairs, instructions):
             first, second = split_pair(pair, instructions)
             new_pairs[first] += pairs[pair]
             new_pairs[second] += pairs[pair]
+            element_counter[first[1]] += pairs[pair]
 
     return new_pairs
 
-def count_elements(pairs):
-    element_counter = defaultdict(int)
 
-    for pair in pairs:
-        element_counter[pair[1]] += pairs[pair]
-
-    return element_counter
-
-def solve(pairs, instructions, steps):
+def solve(pairs, instructions, element_counter, steps):
     for _ in range(steps):
-        pairs = insert(pairs, instructions)
+        pairs = insert(pairs, instructions, element_counter)
 
-    elements = sorted(count_elements(pairs).values())
+    element_qtys = sorted(element_counter.values())
 
-    return elements[-1] - elements[0]
+    return element_qtys[-1] - element_qtys[0]
 
 raw_data = '''NNCB
 
@@ -73,14 +68,16 @@ CC -> N
 CN -> C'''
 
 print('Tests...')
-poly, inserts = parse_data(raw_data)
-print('Most common - least common after 10 insertions:', solve(poly, inserts, 10) == 1588)
-print('Most common - least common after 40 insertions:', solve(poly, inserts, 40) == 2188189693529)
+poly, inserts, counter = parse_data(raw_data)
+print('Most common - least common after 10 insertions:', solve(poly, inserts, counter, 10) == 1588)
+counter = parse_data(raw_data)[2] #reset element counter
+print('Most common - least common after 40 insertions:', solve(poly, inserts, counter, 40) == 2188189693529)
 print('---------------------')
 
 print('Solution...')
 with open('inp', mode='r') as inp:
     raw_data = inp.read()
-    poly, inserts = parse_data(raw_data)
-    print('Most common - least common after 10 insertions:', solve(poly, inserts, 10))
-    print('Most common - least common after 40 insertions:', solve(poly, inserts, 40))
+    poly, inserts, counter = parse_data(raw_data)
+    print('Most common - least common after 10 insertions:', solve(poly, inserts, counter, 10))
+    counter = parse_data(raw_data)[2] #reset element counter
+    print('Most common - least common after 40 insertions:', solve(poly, inserts, counter, 40))
