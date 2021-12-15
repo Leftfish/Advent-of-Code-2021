@@ -3,16 +3,7 @@ from queue import PriorityQueue
 
 print('Day 15 of Advent of Code!')
 
-raw_data = '''1163751742
-1381373672
-2136511328
-3694931569
-7463417111
-1319128137
-1359912421
-3125421639
-1293138521
-2311944581'''
+MAX_RISK = 9
 
 class Graph:
     def __init__(self, data):
@@ -28,7 +19,6 @@ class Graph:
                         neighbor_weight = data[adj_i][adj_j]
                         self.edges[(i, j)].append((neighbor_coords, neighbor_weight))
 
-
     def dijkstra(self, start):
         distances = {vertex:float('inf') for vertex in self.edges}
         distances[start] = 0
@@ -38,7 +28,7 @@ class Graph:
         pq.put((0, start))
         
         while not pq.empty():
-            (dist, current_vertex) = pq.get()
+            _, current_vertex = pq.get()
             visited.add(current_vertex)
 
             for neighbor in self.edges[current_vertex]:
@@ -51,22 +41,64 @@ class Graph:
                         pq.put((new_cost, neighbor_coords))
                         distances[neighbor_coords] = new_cost
         return distances
+        
+def new_risk(risk, delta):
+        for _ in range(delta):
+            risk += 1
+            if risk > MAX_RISK:
+                risk = 1
+        return risk
 
-data = [list(map(int, list(line))) for line in raw_data.splitlines()]
-G = Graph(data)
-start = (0,0)
-end = (len(data)-1, len(data[0])-1)
-print(G.dijkstra(start)[end])
+def expand_right(cave_map, times):    
+    tile_size = len(cave_map[0])
+    for t in range(1, times):
+        for line in cave_map:
+            for i in range(tile_size):
+                line.append(new_risk(line[i], t))
+    return cave_map
 
+def expand_down(cave_map, times):
+    tile_size = len(cave_map)
+    for t in range(1, times):
+        for i in range(tile_size):
+            new_line = [new_risk(value, t) for value in cave_map[i]]
+            cave_map.append(new_line)
+    return cave_map
+    
+raw_data = '''1163751742
+1381373672
+2136511328
+3694931569
+7463417111
+1319128137
+1359912421
+3125421639
+1293138521
+2311944581'''
 
 print('Tests...')
+data = [list(map(int, list(line))) for line in raw_data.splitlines()]
+small_cave = Graph(data)
+start = (0,0)
+end = (len(data)-1, len(data[0])-1)
+print('Shortest path in the cavern:', small_cave.dijkstra(start)[end] == 40)
+data = expand_right(data, 5)
+data = expand_down(data, 5)
+big_cave = Graph(data)
+end = (len(data)-1, len(data[0])-1)
+print('Shortest path in the entire cave:', big_cave.dijkstra(start)[end] == 315)
 print('---------------------')
 
 print('Solution...')
 with open('inp', mode='r') as inp:
     raw_data = inp.read()
     data = [list(map(int, list(line))) for line in raw_data.splitlines()]
-    G = Graph(data)
+    small_cave = Graph(data)
     start = (0,0)
     end = (len(data)-1, len(data[0])-1)
-    print(G.dijkstra(start)[end])
+    print('Shortest path in the cavern:', small_cave.dijkstra(start)[end])
+    data = expand_right(data, 5)
+    data = expand_down(data, 5)
+    big_cave = Graph(data)
+    end = (len(data)-1, len(data[0])-1)
+    print('Shortest path in the entire cave:', big_cave.dijkstra(start)[end])
