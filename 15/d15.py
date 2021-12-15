@@ -44,29 +44,21 @@ class Graph:
 
 
 def new_risk(risk, delta):
-        for _ in range(delta):
-            risk += 1
-            if risk > MAX_RISK:
-                risk = 1
-        return risk
+        return (risk + delta - 1) % MAX_RISK + 1
 
 
-def expand_right(cave_map, times):
-    tile_size = len(cave_map[0])
-    for t in range(1, times):
+def expand_cave(cave_map, times):
+    height, width = len(cave_map), len(cave_map[0])
+    for delta in range(1, times): # expand right
         for line in cave_map:
-            for i in range(tile_size):
-                line.append(new_risk(line[i], t))
-    return cave_map
-
-
-def expand_down(cave_map, times):
-    tile_size = len(cave_map)
-    for t in range(1, times):
-        for i in range(tile_size):
-            new_line = [new_risk(value, t) for value in cave_map[i]]
+            for i in range(width):
+                line.append(new_risk(line[i], delta))
+    for delta in range(1, times): # expand down
+        for i in range(height):
+            new_line = [new_risk(value, delta) for value in cave_map[i]]
             cave_map.append(new_line)
     return cave_map
+
 
 raw_data = '''1163751742
 1381373672
@@ -85,9 +77,7 @@ small_cave = Graph(data)
 start = (0, 0)
 end = (len(data)-1, len(data[0])-1)
 print('Shortest path in the cavern:', small_cave.dijkstra(start)[end] == 40)
-data = expand_right(data, 5)
-data = expand_down(data, 5)
-big_cave = Graph(data)
+big_cave = Graph(expand_cave(data, 5))
 end = (len(data)-1, len(data[0])-1)
 print('Shortest path in the entire cave:', big_cave.dijkstra(start)[end] == 315)
 print('---------------------')
@@ -100,8 +90,6 @@ with open('inp', mode='r') as inp:
     start = (0, 0)
     end = (len(data)-1, len(data[0])-1)
     print('Shortest path in the cavern:', small_cave.dijkstra(start)[end])
-    data = expand_right(data, 5)
-    data = expand_down(data, 5)
-    big_cave = Graph(data)
+    big_cave = Graph(expand_cave(data, 5))
     end = (len(data)-1, len(data[0])-1)
     print('Shortest path in the entire cave:', big_cave.dijkstra(start)[end])
