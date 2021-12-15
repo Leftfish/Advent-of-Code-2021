@@ -23,3 +23,4 @@ Things I **L**earned, **R**evised or **I**mproved at in 2021:
 * [Day 12](12/d12.py): DFS(**I**) and "yield from" in Python (**L**)
 * [Day 13](13/d13.py): slicing 2d NumPy arrays (**L**) and avoiding 2d arrays altogether thanks to dictionaries or sets (**I**)
 * [Day 14](14/d14.py): that you don't actually have to store everything that you count (**I**)
+* [Day 15](15/d15.py): Dijkstra's algorithm, finally! (**L**)
