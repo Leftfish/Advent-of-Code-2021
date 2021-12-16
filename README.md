@@ -24,3 +24,4 @@ Things I **L**earned, **R**evised or **I**mproved at in 2021:
 * [Day 13](13/d13.py): slicing 2d NumPy arrays (**L**) and avoiding 2d arrays altogether thanks to dictionaries or sets (**I**)
 * [Day 14](14/d14.py): that you don't actually have to store everything that you count (**I**)
 * [Day 15](15/d15.py): Dijkstra's algorithm, finally! (**L**)
+* [Day 16](16/d16.py): oooof, this was a tough one; managed to do part 1 without help - and learn a lot about recursion on the way (**L**), but only looking at another solution helped be represent the tree structure properly (**L**)
