@@ -29,11 +29,17 @@ def is_miss(bullet, target, dx):
     x, y = bullet
     return x > x2 or y < y1 or (x < x1 and dx == 0)
 
-def simulate(target, scope):
+def simulate(target):
+    x1, x2, y1, y2 = target
+
+    scope_x = abs(max(x1, x2)) * 2
+    scope_y = abs(max(y1, y2)) * 2
+
     max_ys = []
     bullet = (0, 0)
-    for ix in range(-scope, scope):
-        for iy in range(-scope, scope):
+
+    for ix in range(scope_x):
+        for iy in range(-scope_y, scope_y):
             bullet = (0, 0)
             max_y = bullet[1]
             dx, dy = ix, iy
@@ -49,12 +55,12 @@ def simulate(target, scope):
 raw_data = 'target area: x=20..30, y=-10..-5'
 
 print('Tests...')
-max_ys = simulate(get_target(raw_data), 40)
+max_ys = simulate(get_target(raw_data))
 print(f'Highest throw: {sorted(max_ys)[-1] == 45}. Possible throws: {len(max_ys) == 112}.')
 print('---------------------')
 
 print('Solution...')
 with open('inp', mode='r') as inp:
     raw_data = inp.read()
-    max_ys = simulate(get_target(raw_data), 200)
+    max_ys = simulate(get_target(raw_data))
     print(f'Highest throw: {sorted(max_ys)[-1]}. Possible throws: {len(max_ys)}.')
