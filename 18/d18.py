@@ -3,21 +3,12 @@ from math import floor, ceil
 
 print('Day 18 of Advent of Code!')
 
-raw_data = ''''''
-
 EXPLOSIVE_DEPTH = 4
 SPLITTABLE = 10
 
-def _update_depth(root):
-    if root:
-        _update_depth(root.left)
-        root.depth += 1
-        _update_depth(root.right)
-
 class Node:
-    def __init__(self, data, parent, depth=1):
-        
-        if data == None:
+    def __init__(self, data, parent=None, depth=1):
+        if data == None: # add new empty node (for addition)
             self.left = None
             self.right = None
             self.parent = None
@@ -25,15 +16,14 @@ class Node:
             self.parent = None
             self.depth = depth
         
-        elif type(data) is list:
-            #print(f"new node: internal from {data}, depth {depth}")
+        elif type(data) is list: # add new internal
             self.depth = depth
             self.left = Node(data[0], self, depth+1)
             self.right = Node(data[1], self, depth+1)
             self.val = None
             self.parent = parent
-        else:
-            #print(f"new node: leaf {data}, depth {depth}")
+        
+        else:  # add new leaf
             self.depth = depth
             self.left = None
             self.right = None
@@ -51,7 +41,7 @@ class Node:
 
     def explode(self):
         if self.val is not None:
-            raise Exception('Non-leaf cannot explode')
+            raise Exception('This type of node cannot explode!')
         
         prev, nxt = find_prev(self.left), find_next(self.right)
 
@@ -66,7 +56,7 @@ class Node:
 
     def split(self):
         if self.val is None or self.val < SPLITTABLE:
-            raise Exception('This node cannot split')
+            raise Exception('This type of node cannot split!')
         
         left_val, right_val = floor(self.val/2), ceil(self.val/2)
 
@@ -75,18 +65,23 @@ class Node:
         self.right = Node(right_val, self, self.depth + 1)
 
     def add(self, other_data):
-        new_root = Node(data=None, parent=None, depth=0)
+        def update_depth(root):
+            if root:
+                update_depth(root.left)
+                root.depth += 1
+                update_depth(root.right)
+        
+        new_root = Node(data=None, depth=0)
         other = Node(other_data, new_root)
         self.parent = new_root
         new_root.left = self
         new_root.right = other
-        _update_depth(new_root)
         
-        # update all nodes depth
+        update_depth(new_root) # update depth of all nodes (simple in-order traversal)
+        
         return new_root
     
     def __repr__(self):
-        #return f'V:{self.val}/d{self.depth}' if self.val is not None else f'[{self.left},{self.right},d{self.depth}]'
         return f'{self.val}' if self.val is not None else f'[{self.left},{self.right}]'
 
 
@@ -116,7 +111,6 @@ def find_prev(node: Node)  -> Node:
             return find_prev(current_parent)
 
 def find_next(node: Node) -> Node:
-    
     def find_leftmost_leaf(node):
         if node.val is not None:
             return node
@@ -125,18 +119,19 @@ def find_next(node: Node) -> Node:
     
     current_parent = node.parent
    
+    # successor on the same level?
     if current_parent.right.val is not None and current_parent.right is not node:
         return current_parent.right
     
     else:
         prev_parent = current_parent.parent
-
+        # we tried going right but reached root - no successors!
         if current_parent.parent == None:
             return
-        
+        # we went up to a 'left' node - looking in its 'right' neighbor
         elif current_parent == prev_parent.left:
             return find_leftmost_leaf(prev_parent.right)
-        
+        # we went up, not at root yet, let's go up until we're in a 'left' node
         else:
             return find_next(current_parent)
 
@@ -176,9 +171,8 @@ def find_splitting_value(node: Node) -> None:
             break
     return None
 
-def add_line_to_tree(tree, line):
+def add_line_to_tree(tree: Node, line: list) -> Node:
     tree = tree.add(line)
-    #print(f'{tree}')
 
     explosive, splittable = find_explosive_pair(tree), find_splitting_value(tree)
     
@@ -198,11 +192,10 @@ def add_line_to_tree(tree, line):
             #print(f'After split:\t{tree}')
             #print(f'   ---> Now to explode: {explosive}. To split: {splittable}')
             continue
-    #print(f'LEFT to explode: {explosive}. To split: {splittable}')
 
     return tree
 
-def calc_magnitude(tree: Node):
+def calc_magnitude(tree: Node) -> int:
     acc = 0
     if tree.left.val != None:
         acc += 3 * tree.left.val
@@ -214,6 +207,25 @@ def calc_magnitude(tree: Node):
         acc += 2 * calc_magnitude(tree.right)
     return acc
 
+def part_1(data: list) -> int:
+    tree = Node(loads(data[0]), None)
+    for line in data[1:]:
+        new_line = loads(line)
+        tree = add_line_to_tree(tree, new_line)
+    return calc_magnitude(tree)
+
+def part_2(data: list) -> int:
+    maximum = 0
+    for i in range(len(data)):
+        for j in range(len(data)):
+            if i == j:
+                continue
+            tree = Node(loads(data[i]), None)
+            new_tree = add_line_to_tree(tree, loads(data[j]))
+            mag = calc_magnitude(new_tree)
+            if mag > maximum:
+                maximum = mag
+    return maximum
 
 raw_data = '''[[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]
 [[[5,[2,8]],4],[5,[[9,9],0]]]
@@ -226,25 +238,15 @@ raw_data = '''[[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]
 [[2,[[7,7],7]],[[5,8],[[9,3],[0,2]]]]
 [[[[5,2],5],[8,[3,7]]],[[5,[7,5]],[4,4]]]'''
 
-data = raw_data.splitlines()
-tree = Node(loads(data[0]), None)
-for line in data[1:]:
-    new_line = loads(line)
-    tree = add_line_to_tree(tree, new_line)
-
-print(calc_magnitude(tree))
-
-
 print('Tests...')
+data = raw_data.splitlines()
+print('Sum after adding all:', part_1(data) == 4140)
+print('Greatest sum of any two distinct:', part_2(data) == 3993)
 print('---------------------')
 
 print('Solution...')
 with open('inp', mode='r') as inp:
     raw_data = inp.read()
     data = raw_data.splitlines()
-    tree = Node(loads(data[0]), None)
-    for line in data[1:]:
-        new_line = loads(line)
-        tree = add_line_to_tree(tree, new_line)
-
-    print(calc_magnitude(tree))
+    print('Sum after adding all:', part_1(data))
+    print('Greatest sum of any two distinct:', part_2(data))

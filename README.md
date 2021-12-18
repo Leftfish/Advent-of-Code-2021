@@ -26,3 +26,4 @@ Things I **L**earned, **R**evised or **I**mproved at in 2021:
 * [Day 15](15/d15.py): Dijkstra's algorithm, finally! (**L**)
 * [Day 16](16/d16.py): oooof, this was a tough one; managed to do part 1 without help - and learn a lot about recursion on the way (**L**), but only looking at another solution helped be represent the tree structure properly (**L**)
 * [Day 17](17/d17.py): using regex to extract negative integers from string (**R**)
+* [Day 18](18/d18.py): another tough day, lots of things I vaguely know about but never had a chance to implement: recursively parsing lists into binary trees (**L**), traversing trees in-order iteratively and recursively (**L**), finding predecessors and successors in a binary tree which is NOT a binary search tree (**L**)
