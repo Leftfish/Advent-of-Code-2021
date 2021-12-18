@@ -1,25 +1,20 @@
-from collections import deque
-
 print('Day 18 of Advent of Code!')
 
 raw_data = ''''''
 
 
-#l = [[[[[9,8],1],2],3],4]
-#l = [[[[6,3],[2,6]],[[6,9],[8,1]]],[[[2,1],[7,5]],[[7,3],[7,3]]]]
-
 class Node:
     def __init__(self, data, parent, depth=1):
         
         if type(data) is list:
-            print(f"new node: internal from {data}, depth {depth}")
+            #print(f"new node: internal from {data}, depth {depth}")
             self.depth = depth
             self.left = Node(data[0], self, depth+1)
             self.right = Node(data[1], self, depth+1)
             self.val = None
             self.parent = parent
         else:
-            print(f"new node: leaf {data}, depth {depth}")
+            #print(f"new node: leaf {data}, depth {depth}")
             self.depth = depth
             self.left = None
             self.right = None
@@ -28,15 +23,17 @@ class Node:
 
     def __repr__(self):
         return str(self.val) if self.val is not None else f'[{self.left},{self.right}]'
-    
-    
-def find_predecessor_leaf(node):
-    def find_rightmost_leaf(node):
-        if node.val is not None:
-            return node
-        else:
-            return find_rightmost_leaf(node.right)
-    
+
+def find_rightmost_leaf(node):
+    print(f'Node: {node}. Node.left {node.left} Node.right {node.right} Node.val {node.val}')
+    if node.val is not None:
+        print(f"found pred! {node}")
+        return node
+    else:
+        return find_rightmost_leaf(node.right)
+
+
+def find_prev(node):    
     current_parent = node.parent
 
     print(f'I am {node}. My parent is {current_parent}')
@@ -46,6 +43,7 @@ def find_predecessor_leaf(node):
         return find_rightmost_leaf(node.left)
     
     elif current_parent.left.val is not None and current_parent.left is not node:
+        print(f'My predecessor is on the same level')
         return current_parent.left.val
     
     else:
@@ -61,17 +59,56 @@ def find_predecessor_leaf(node):
         
         else:
             print(f'Recursing from {current_parent}')
-            find_predecessor_leaf(current_parent)
+            find_prev(current_parent)
+
+
+def find_next(node):
+    
+    def find_leftmost_leaf(node):
+        if node.val is not None:
+            return node
+        else:
+            return find_leftmost_leaf(node.left)
+    
+    current_parent = node.parent
+
+    print(f'I am {node}. My parent is {current_parent}')
+   
+    if current_parent.right.val is not None and current_parent.right is not node:
+        print(f'My successor is on the same level')
+        return current_parent.right.val
+    
+    else:
+        prev_parent = current_parent.parent
+
+        if current_parent.parent == None:
+            print(f'Reached root, no successors!')
+            return
+        
+        elif current_parent == prev_parent.left:
+            print(f'Found proper node, looking in {prev_parent.right}')
+            return find_leftmost_leaf(prev_parent.right)
+        
+        else:
+            print(f'Recursing from {current_parent}')
+            find_next(current_parent)
 
 
 
+l = [[[[1,1],[2,2]],[3,3]],[4,4]]
+l = [[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]]
 tree = Node(l, None)
 print(tree)
 
-#curr = tree.left.left.left.right
-#curr = tree.right.right.right.right.left
-#print(curr)
-#print(f'Pred',find_predecessor_leaf(curr))
+#curr = tree.left.right.right.right
+#curr = tree.right.left
+curr = tree.right.left.left.left
+
+print(curr)
+print(f'Pred',find_prev(curr))
+print(f'Nxt',find_next(curr))
+
+
 
 
 
