@@ -24,25 +24,21 @@ class Node:
     def __repr__(self):
         return str(self.val) if self.val is not None else f'[{self.left},{self.right}]'
 
-def find_rightmost_leaf(node):
-    print(f'Node: {node}. Node.left {node.left} Node.right {node.right} Node.val {node.val}')
-    if node.val is not None:
-        print(f"found pred! {node}")
-        return node
-    else:
-        return find_rightmost_leaf(node.right)
 
 
 def find_prev(node):    
+    def find_rightmost_leaf(node):
+
+        if node.val is not None:
+            return node
+        else:
+            return find_rightmost_leaf(node.right)
+
     current_parent = node.parent
 
     print(f'I am {node}. My parent is {current_parent}')
 
-    if current_parent == None:
-        print(f'Reached root from right side, looking in {node.left}')
-        return find_rightmost_leaf(node.left)
-    
-    elif current_parent.left.val is not None and current_parent.left is not node:
+    if current_parent.left.val is not None and current_parent.left is not node:
         print(f'My predecessor is on the same level')
         return current_parent.left.val
     
@@ -59,7 +55,7 @@ def find_prev(node):
         
         else:
             print(f'Recursing from {current_parent}')
-            find_prev(current_parent)
+            return find_prev(current_parent)
 
 
 def find_next(node):
@@ -91,7 +87,15 @@ def find_next(node):
         
         else:
             print(f'Recursing from {current_parent}')
-            find_next(current_parent)
+            return find_next(current_parent)
+
+def printInorder(root):
+    if root:
+        printInorder(root.left)
+        # then print the data of node
+        print(root.val, end = ' ')
+        # now recur on right child
+        printInorder(root.right)
 
 
 
@@ -100,13 +104,12 @@ l = [[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]]
 tree = Node(l, None)
 print(tree)
 
-#curr = tree.left.right.right.right
-#curr = tree.right.left
-curr = tree.right.left.left.left
+printInorder(tree)
 
-print(curr)
-print(f'Pred',find_prev(curr))
-print(f'Nxt',find_next(curr))
+#curr = tree.left.left.left
+#print(curr)
+#print(f'===> Pred = ',find_prev(curr))
+#print(f'\n===> Nxt = ',find_next(curr))
 
 
 
