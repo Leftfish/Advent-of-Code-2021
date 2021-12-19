@@ -1,3 +1,4 @@
+
 import re
 from collections import defaultdict
 from math import sqrt
@@ -5,7 +6,7 @@ from itertools import product, combinations
 
 print('Day 19 of Advent of Code!')
 
-test_data = '''--- scanner 0 ---
+raw_data = '''--- scanner 0 ---
 404,-588,-901
 528,-643,409
 -838,591,734
@@ -142,26 +143,6 @@ test_data = '''--- scanner 0 ---
 -652,-548,-490
 30,-46,-14'''
 
-def get_beacons(scanner: str):
-    beacons = []
-    for raw_beacon in scanner.splitlines():
-        beacon = tuple(map(int, raw_beacon.split(',')))
-        beacons.append(beacon)
-    return beacons
-
-def distance(this, other) -> float:
-    x1, y1, z1 = this
-    x2, y2, z2 = other
-    return sqrt((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)
-
-def get_distance_map(beacons_detected): # computes relative distances (3d) between pairs of beacons detected by a scanner
-    pairs = combinations(beacons_detected, 2)
-    distance_map = defaultdict(set)
-    for one, other in pairs:
-        dist = distance(one, other)
-        distance_map[one].add(dist)
-        distance_map[other].add(dist)
-    return distance_map
 
 class Scanner: # use class to calculate distance maps only once! then we'll figure out how to normalize this...
     def __init__(self, id):
@@ -174,19 +155,21 @@ class Scanner: # use class to calculate distance maps only once! then we'll figu
     def __repr__(self):
         return f'SCN {self.id}'
 
+        
     def get_beacons(self, scanner: str):
         beacons = []
         for raw_beacon in scanner.splitlines():
             beacon = tuple(map(int, raw_beacon.split(',')))
             beacons.append(beacon)
-        self.beacons = beacons
-
-    def distance(this, other) -> float:
-        x1, y1, z1 = this
-        x2, y2, z2 = other
-        return sqrt((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)
+        self.beacons = beacons   
 
     def get_distance_map(self): # computes relative distances (3d) between pairs of beacons detected by a scanner
+
+        def distance(this, other) -> float:
+            x1, y1, z1 = this
+            x2, y2, z2 = other
+            return sqrt((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)
+    
         pairs = combinations(self.beacons, 2)
         distance_map = defaultdict(set)
         for one, other in pairs:
@@ -194,15 +177,6 @@ class Scanner: # use class to calculate distance maps only once! then we'll figu
             distance_map[one].add(dist)
             distance_map[other].add(dist)
         self.distance_map = distance_map
-
-def get_overlap_map(this_scanner, other_scanner):
-    beacon_pairs = product(this_scanner.beacons, other_scanner.beacons)
-    for this_beacon, other_beacon in beacon_pairs:
-        d_this = this_scanner.distance_map[this_beacon]
-        d_other = other_scanner.distance_map[other_beacon]
-        overl = len(d_this & d_other)
-        if overl >= 11:
-            print(f'{this_beacon} == {other_beacon}')
 
 def initiate_scanners(data):
     regex = r'--- scanner (\d+) ---'
@@ -232,18 +206,41 @@ def initiate_scanners(data):
     
     return scanners
 
-scanners = initiate_scanners(test_data)
+def get_all_beacons(data):
+    beacons = set()
+    regex = r'--- scanner (\d+) ---'
+    for line in data.splitlines():  
+        is_new_scanner = re.findall(regex, line)
+        if line and not is_new_scanner:
+            beacons.add(tuple(map(int, line.split(','))))
+    return beacons
 
-s_pairs = combinations(scanners, 2)
-for one, other in s_pairs:
-    pass
-    print(one, other)
-    get_overlap_map(one, other)
+
+def get_overlap_map(this_scanner, other_scanner):
+    overlaps = defaultdict(set)
+    beacon_pairs = product(this_scanner.beacons, other_scanner.beacons)
+    for this_beacon, other_beacon in beacon_pairs:
+        d_this = this_scanner.distance_map[this_beacon]
+        d_other = other_scanner.distance_map[other_beacon]
+        overl = len(d_this & d_other)
+        if overl >= 11:
+            print(f'{this_beacon} == {other_beacon}')
+            overlaps[this_beacon].add(other_beacon)
+    return overlaps
 
 
+def part1(raw_data):
+    scanners = initiate_scanners(raw_data)
 
+    scanner_pairs = combinations(scanners, 2)
+    for one, other in scanner_pairs:
+        print(f'{one} vs. {other}')
+        overlaps = get_overlap_map(one, other)
 
-def rotate(x, y, z, i) -> tuple:
+part1(raw_data)
+
+def rotate(beacon, i) -> tuple:
+    x, y, z = beacon
     rotates = [(x, y, z),
         (-y, x, z),
         (-x, -y, z),
@@ -270,39 +267,11 @@ def rotate(x, y, z, i) -> tuple:
         (z, -x, -y)]
     return rotates[i]
 
-def rotate_beacons(beacons):
-    rotated = defaultdict(list)
-    for beacon in beacons:
-
-        for i in range(24):
-            rotated[tuple(beacon)].append(rotate(*beacon, i))
-    return rotated
-            
-def lcs(this, other):
-    overlap = [[0 for _ in range(len(this) + 1)] for _ in range(len(other) + 1)]
-    for i in range(len(this)):
-        for j in range(len(other)):
-            if this[i] == other[j]:
-                overlap[i+1][j+1] = overlap[i][j] + 1
-            else:
-                overlap[i+1][j+1] = max(overlap[i][j+1], overlap[i+1][j])
-    res = []
-    i, j = len(this), len(other)
-    while i and j:
-        if overlap[i][j] == overlap[i - 1][j]:
-            i -= 1
-        elif overlap[i][j] == overlap[i][j - 1]:
-            j -= 1
-        else:
-            res.append(this[i - 1])
-            i -= 1
-            j -= 1
-    return res[::-1]
-
 print('Tests...')
 
 print('---------------------')
 
 print('Solution...')
 with open('inp', mode='r') as inp:
-    raw_data = inp.read()
+    text = raw_data = inp.read()
+    
