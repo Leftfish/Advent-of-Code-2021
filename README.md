@@ -29,3 +29,4 @@ Things I **L**earned, **R**evised or **I**mproved at in 2021:
 * [Day 18](18/d18.py): another tough day, lots of things I vaguely know about but never had a chance to implement: recursively parsing lists into binary trees (**L**), traversing trees in-order iteratively and recursively (**L**), finding predecessors and successors in a binary tree which is NOT a binary search tree (**L**)
 * Day 19: Not done :( Got it to work for the test input, but fails on the actual puzzle. I did learn a bit about vectors (**L**) along the way...
 * [Day 20](20/d20.py): representing grids as dictionaries with default values (**I**)
+* [Day 21](21/d21.py): dynamic programming (**I**) and using LRU_cache from functools (**L**)
