@@ -40,14 +40,18 @@ def part1(data):
                             cubes.remove(cube)
     return len(cubes)
 
-def get_intersect_range(this_min, this_max, other_min, other_max):
-    if other_min > this_max or this_min > other_max:
-        return None
-    else:
-        sorted_vals = sorted([this_min, this_max, other_min, other_max])
-        return sorted_vals[1], sorted_vals[2]
-
 def get_intersect_coordinates(this_coords, other_coords):
+    def get_intersect_range(this_min, this_max, other_min, other_max):
+        if other_min > this_max or this_min > other_max:
+            # e.g. for X: first condition is 'other is too far right', second is 'this is too far right'
+            return None
+        else:
+            # the intersection - if it occurs - is always between the smaller max and bigger min, i.e. the 'mid' values!
+            # need to sort them because we don't know the 'side' on which the intersect occurs
+
+            sorted_vals = sorted([this_min, this_max, other_min, other_max])
+            return sorted_vals[1], sorted_vals[2]
+
     this_x, this_X, this_y, this_Y, this_z, this_Z = this_coords
     other_x, other_X, other_y, other_Y, other_z, other_Z = other_coords
     
@@ -57,10 +61,7 @@ def get_intersect_coordinates(this_coords, other_coords):
     
     all_intersects = [intersect_xs, intersect_ys, intersect_zs]
     
-    if not all(all_intersects): 
-        return None
-    
-    return all_intersects
+    return all_intersects if all(all_intersects) else None # three tuples or nothing
 
 class Cuboid:
     def __init__(self, x, X, y, Y, z, Z):
@@ -69,7 +70,7 @@ class Cuboid:
     
     def __repr__(self):
         x, X, y, Y, z, Z = self.coords
-        status = f'Cuboid: Xs {x}-{X}, Ys {y}-{Y}, Zs {z}-{Z}. Empty spaces: {self.hollows}. Volume: {self.volume()}'
+        status = f'Cuboid: Xs {x}-{X}, Ys {y}-{Y}, Zs {z}-{Z}. Empty spaces inside: {len(self.hollows)}. Volume: {self.volume()}'
         return status
 
     def remove_intersection(self, other):
@@ -82,7 +83,7 @@ class Cuboid:
             y_, Y_ = intersection_coords[1][0], intersection_coords[1][1]
             z_, Z_ = intersection_coords[2][0], intersection_coords[2][1]
 
-            for hollow_cube in self.hollows: # recursively clear existing internal 'vacuum' spaces
+            for hollow_cube in self.hollows: # clear existing internal 'vacuum' spaces
                 hollow_cube.remove_intersection((x_, X_, y_, Y_, z_, Z_))
             
             #print(f'Adding hollow cube', (x_, X_, y_, Y_, z_, Z_))
