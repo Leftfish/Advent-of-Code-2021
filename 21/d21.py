@@ -1,36 +1,28 @@
 import re
-from itertools import product
+from itertools import cycle, product
 from functools import lru_cache
 
 print('Day 21 of Advent of Code!')
-
-def dice(start=1, sides=100):
-    value = start
-    while True:
-        yield value
-        if value == sides:
-            value = start
-        else:
-            value += 1
 
 def move(position, move, fields=10):
     return ((position - 1) + move) % fields + 1
 
 def warmup_game(p1, p2, max_score):
-    d = dice(1, 100)
+    d = cycle(range(1,101))
     p1_score = 0
     p2_score = 0
     rolls = 0
+    rolls_per_turn = 3
 
     while True:
-        p1_move = sum([next(d), next(d), next(d)])
-        rolls += 3
+        p1_move = sum([next(d) for _ in range(rolls_per_turn)])
+        rolls += rolls_per_turn
         p1 = move(p1, p1_move)
         p1_score += p1
         if p1_score >= max_score: break
         
-        p2_move = sum([next(d), next(d), next(d)])
-        rolls += 3
+        p2_move = sum([next(d) for _ in range(rolls_per_turn)])
+        rolls += rolls_per_turn
         p2 = move(p2, p2_move)
         p2_score += p2
         if p2_score >= max_score: break

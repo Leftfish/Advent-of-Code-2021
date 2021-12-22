@@ -30,3 +30,4 @@ Things I **L**earned, **R**evised or **I**mproved at in 2021:
 * Day 19: Not done :( Got it to work for the test input, but fails on the actual puzzle. I did learn a bit about vectors (**L**) along the way...
 * [Day 20](20/d20.py): representing grids as dictionaries with default values (**I**)
 * [Day 21](21/d21.py): dynamic programming (**I**) and using LRU_cache from functools (**L**)
+* [Day 22](22/d22.py): a tough one again; figuring out how to think in 3D to represent cubes as ranges of points (**L**) wasn't that obvious
