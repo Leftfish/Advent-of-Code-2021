@@ -31,3 +31,4 @@ Things I **L**earned, **R**evised or **I**mproved at in 2021:
 * [Day 20](20/d20.py): representing grids as dictionaries with default values (**I**)
 * [Day 21](21/d21.py): dynamic programming (**I**) and using LRU_cache from functools (**L**)
 * [Day 22](22/d22.py): a tough one again; figuring out how to think in 3D to represent cubes as ranges of points (**L**) wasn't that obvious, and I barely had contact with the inclusion–exclusion principle (**L**) before
+* [Day 23](23/part1.txt): solved part 1 of the puzzle by hand in about 5 minutes, still no time to properly code it (will probably use A*)

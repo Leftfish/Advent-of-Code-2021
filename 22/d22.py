@@ -61,7 +61,7 @@ def get_intersect_coordinates(this_coords, other_coords):
     
     all_intersects = [intersect_xs, intersect_ys, intersect_zs]
     
-    return all_intersects if all(all_intersects) else None # three tuples or nothing
+    return all_intersects if all(all_intersects) else None # three tuples or nothing if at least axis does not intersect
 
 class Cuboid:
     def __init__(self, x, X, y, Y, z, Z):
@@ -75,9 +75,11 @@ class Cuboid:
 
     def remove_intersection(self, other):
         intersection_coords = get_intersect_coordinates(self.coords, other)
+
         if not intersection_coords:
             #print('No intersection!')
             return
+        
         else:
             x_, X_ = intersection_coords[0][0], intersection_coords[0][1]
             y_, Y_ = intersection_coords[1][0], intersection_coords[1][1]
