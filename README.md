@@ -5,22 +5,22 @@ Again I'm trying to find out how far I can make it in [Advent of Code](https://a
 * 2019: 13 days
 * 2020: 25 days for the first time!
 
-I have no idea if I can devote as much time to solving puzzles as last year and if my feeble skills can hold up against this year's tasks. But let's give it a try.
+I had no idea if I could devote as much time to solving puzzles as last year and if my feeble skills could hold up against this year's tasks. So far I have solved 22 out of 25 puzzles, with one of the remaining partially done and two other not touched yet. I'm planning to come back to them later.
 
 Things I **L**earned, **R**evised or **I**mproved at in 2021:
 
-* [Day 1](01/d01.py): using zip(**R**) and list comprehensions in Python(**R**)
-* [Day 2](02/d02.py): using complex numbers in Python(**L**)
-* [Day 3](03/d03.py): basic set operations in Python(**R**), typing hints in Python(**I**) and operator module(**R**)
+* [Day 1](01/d01.py): using zip (**R**) and list comprehensions in Python (**R**)
+* [Day 2](02/d02.py): using complex numbers in Python (**L**)
+* [Day 3](03/d03.py): basic set operations in Python (**R**), typing hints in Python (**I**) and operator module (**R**)
 * [Day 4](04/d04.py): parsing strings(**R**)
-* [Day 5](05/d05.py): using regular expressions(**R**) and drawing plots in matplotlib(**L**)
-* [Day 6](06/d06.py): using deques(**R**)
-* [Day 7](07/d07.py): Gauss's formula(**R**) and I got to know that statistics module is thing in Python(**L**)
-* [Day 8](08/d08.py): set operations(**R**) and frozenset in Pyton(**L**)
+* [Day 5](05/d05.py): using regular expressions (**R**) and drawing plots in matplotlib (**L**)
+* [Day 6](06/d06.py): using deques (**R**)
+* [Day 7](07/d07.py): Gauss's formula (**R**) and I got to know that statistics module is thing in Python (**L**)
+* [Day 8](08/d08.py): set operations (**R**) and frozenset in Python (**L**)
 * [Day 9](09/d09.py): using iterative BFS (**R**) and recursive DFS(**R**) to find islands in a 2D matrix (**L**)
-* [Day 10](10/d10.py): using stacks(**R**)
-* [Day 11](11/d11.py): some very basic OOP principles(**R**) but the code needs a lot of cleaning up
-* [Day 12](12/d12.py): DFS(**I**) and "yield from" in Python (**L**)
+* [Day 10](10/d10.py): using stacks (**R**)
+* [Day 11](11/d11.py): some very basic OOP principles (**R**) but the code needs a lot of cleaning up
+* [Day 12](12/d12.py): DFS (**I**) and "yield from" in Python (**L**)
 * [Day 13](13/d13.py): slicing 2d NumPy arrays (**L**) and avoiding 2d arrays altogether thanks to dictionaries or sets (**I**)
 * [Day 14](14/d14.py): that you don't actually have to store everything that you count (**I**)
 * [Day 15](15/d15.py): Dijkstra's algorithm, finally! (**L**)
@@ -31,4 +31,6 @@ Things I **L**earned, **R**evised or **I**mproved at in 2021:
 * [Day 20](20/d20.py): representing grids as dictionaries with default values (**I**)
 * [Day 21](21/d21.py): dynamic programming (**I**) and using LRU_cache from functools (**L**)
 * [Day 22](22/d22.py): a tough one again; figuring out how to think in 3D to represent cubes as ranges of points (**L**) wasn't that obvious, and I barely had contact with the inclusion–exclusion principle (**L**) before
-* [Day 23](23/part1.txt): solved part 1 of the puzzle by hand in about 5 minutes, still no time to properly code it (will probably use A*)
+* [Day 23](23/d23.py): solved [part 1](23/part1.txt) of the puzzle by hand in about 5 minutes, then spent a couple of hours a day for half a week implementing the game rules for part 2, and then another hour or so to implement a simple Dijkstra search (**I**)
+* Day 24: not tried yet
+* Day 25: not tried yet

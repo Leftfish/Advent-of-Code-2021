@@ -1,3 +1,5 @@
+from queue import PriorityQueue
+
 '''
 #############
 #12.3.4.5.67#
@@ -7,46 +9,8 @@
   # # # # #
   #########
 
-POKOJE: 11, 12, 13, 14 (A, B, C, D)
+ROOMS: 11, 12, 13, 14 (A, B, C, D)
 '''
-
-def winning_setup(rooms, amphipods):
-    rooms[0].add_amphipod(amphipods[0])
-    rooms[0].add_amphipod(amphipods[1])
-    rooms[0].add_amphipod(amphipods[2])
-    rooms[0].add_amphipod(amphipods[3])
-    rooms[1].add_amphipod(amphipods[4])
-    rooms[1].add_amphipod(amphipods[5])
-    rooms[1].add_amphipod(amphipods[6])
-    rooms[1].add_amphipod(amphipods[7])
-    rooms[2].add_amphipod(amphipods[8])
-    rooms[2].add_amphipod(amphipods[9])
-    rooms[2].add_amphipod(amphipods[10])
-    rooms[2].add_amphipod(amphipods[11])
-    rooms[3].add_amphipod(amphipods[12])
-    rooms[3].add_amphipod(amphipods[13])
-    rooms[3].add_amphipod(amphipods[14])
-    rooms[3].add_amphipod(amphipods[15])
-
-def sample_setup(rooms, amphipods):
-    rooms[0].add_amphipod(amphipods[0])
-    rooms[0].add_amphipod(amphipods[12])
-    rooms[0].add_amphipod(amphipods[13])
-    rooms[0].add_amphipod(amphipods[4])
-    rooms[1].add_amphipod(amphipods[14])
-    rooms[1].add_amphipod(amphipods[5])
-    rooms[1].add_amphipod(amphipods[8])
-    rooms[1].add_amphipod(amphipods[9])
-    rooms[2].add_amphipod(amphipods[8])
-    rooms[2].add_amphipod(amphipods[1])
-    rooms[2].add_amphipod(amphipods[6])
-    rooms[2].add_amphipod(amphipods[7])
-    rooms[3].add_amphipod(amphipods[2])
-    rooms[3].add_amphipod(amphipods[10])
-    rooms[3].add_amphipod(amphipods[3])
-    rooms[3].add_amphipod(amphipods[15])
-
-
 
 MAZE = '##############...........####.#.#.#.###  # # # # #    # # # # #    # # # # #    #########'
 
@@ -190,6 +154,7 @@ class State:
         self.corridors = {corridor.id: corridor.copy() for corridor in corridors}
         self.rooms = {room.id: room.copy() for room in rooms}
         self.cost = cost
+        self.previous = None
 
     def __repr__(self):
         return 'S' + str(self.cost)
@@ -199,6 +164,17 @@ class State:
 
     def __eq__(self, __o: object) -> bool:
         return self.generate_map() == __o.generate_map()
+
+    def __lt__(self, __o: object) -> bool:
+        return self.cost < __o.cost
+
+    def copy(self):
+        copied = State([], [], 0)
+        copied.corridors = {corridor_id: self.corridors[corridor_id].copy() for corridor_id in self.corridors}
+        copied.rooms = {room_id: self.rooms[room_id].copy() for room_id in self.rooms}
+        copied.cost = self.cost
+        copied.previous = self
+        return copied
 
     def generate_map(self):
         current_maze = list(MAZE)
@@ -273,7 +249,7 @@ class State:
     
     def find_moves(self):
         possible_moves = self.find_moves_from_rooms() + self.find_moves_to_rooms()
-        if not possible_moves: print("No moves!")
+        #if not possible_moves: print("No moves!")
         return possible_moves
 
     def update_cost(self, mover, moves):
@@ -289,7 +265,7 @@ class State:
             self.corridors[to].add_amphipod(mover)
         elif from_ in self.corridors:
             cost, through = corridor_to_room[(from_, to)]
-            cost_modifier = ROOM_SIZE - 1 - self.rooms[from_].count_amphipods()
+            cost_modifier = ROOM_SIZE - 1 - self.rooms[to].count_amphipods()
             mover = self.corridors[from_].get_next()
             self.rooms[to].add_amphipod(mover)
         mover.moves += cost + cost_modifier
@@ -307,12 +283,91 @@ def setup(input_function):
     Game = State(corridors, rooms)
     return Game
 
-Game = setup(sample_setup)
-Game.print()
+def play(start):
+    winning = {}
+    visited = {}
+    queue = PriorityQueue()
+    queue.put(start)
+    big_iter_counter = 0
+    while not queue.empty():
+        big_iter_counter += 1
+        if not big_iter_counter % 10000:
+            print(f'After {big_iter_counter} iterations the queue has {queue.qsize()} states left...')
+        current = queue.get()
+        if current.is_winning():
+            print(f"Current is winning: {current.cost}")
+            current.print()
+            if current not in winning or (current in winning and winning[current] > current.cost):
+                winning[current] = current.cost
+        else:
+            if current not in visited or (current in visited and visited[current] > current.cost):
+                visited[current] = current.cost
+                possible_moves = current.find_moves()
+                for move in possible_moves:
+                    new_state = current.copy()
+                    new_state.make_move(move)
+                    queue.put(new_state)
 
-'''print('Day 23 of Advent of Code!')
-print('Tests...')
-print('---------------------')
+    return winning
+
+def print_solution(winning):
+    def print_solution_helper(winning_state):
+        moves = []
+        current = winning_state
+        while current.previous is not None:
+            nxt = current.previous
+            moves.append(nxt)
+            current = nxt
+        print('-----------------------------------------------')
+        for state in reversed(moves):
+            state.print()
+            print()
+        winning_state.print()
+
+    for solution in winning:
+        if winning[solution] < 48000:
+            print_solution_helper(solution)
+            break
+
+def sample_setup(rooms, amphipods):
+    rooms[0].add_amphipod(amphipods[0])
+    rooms[0].add_amphipod(amphipods[12])
+    rooms[0].add_amphipod(amphipods[13])
+    rooms[0].add_amphipod(amphipods[4])
+    rooms[1].add_amphipod(amphipods[14])
+    rooms[1].add_amphipod(amphipods[5])
+    rooms[1].add_amphipod(amphipods[8])
+    rooms[1].add_amphipod(amphipods[9])
+    rooms[2].add_amphipod(amphipods[8])
+    rooms[2].add_amphipod(amphipods[1])
+    rooms[2].add_amphipod(amphipods[6])
+    rooms[2].add_amphipod(amphipods[7])
+    rooms[3].add_amphipod(amphipods[2])
+    rooms[3].add_amphipod(amphipods[10])
+    rooms[3].add_amphipod(amphipods[3])
+    rooms[3].add_amphipod(amphipods[15])
+
+def actual_setup(rooms, amphipods):
+    rooms[0].add_amphipod(amphipods[4])
+    rooms[0].add_amphipod(amphipods[12])
+    rooms[0].add_amphipod(amphipods[13])
+    rooms[0].add_amphipod(amphipods[14])
+    rooms[1].add_amphipod(amphipods[15])
+    rooms[1].add_amphipod(amphipods[5])
+    rooms[1].add_amphipod(amphipods[8])
+    rooms[1].add_amphipod(amphipods[6])
+    rooms[2].add_amphipod(amphipods[0])
+    rooms[2].add_amphipod(amphipods[1])
+    rooms[2].add_amphipod(amphipods[7])
+    rooms[2].add_amphipod(amphipods[2])
+    rooms[3].add_amphipod(amphipods[9])
+    rooms[3].add_amphipod(amphipods[10])
+    rooms[3].add_amphipod(amphipods[3])
+    rooms[3].add_amphipod(amphipods[11])
+
+print('Day 23 of Advent of Code!')
 print('Solution...')
-with open('inp', mode='r') as inp:
-    raw_data = inp.read()'''
+Game = setup(actual_setup)
+Game.print()
+winning = play(Game)
+print_solution(winning)
