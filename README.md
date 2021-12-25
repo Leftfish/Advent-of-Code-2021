@@ -12,7 +12,7 @@ Things I **L**earned, **R**evised or **I**mproved at in 2021:
 * [Day 1](01/d01.py): using zip (**R**) and list comprehensions in Python (**R**)
 * [Day 2](02/d02.py): using complex numbers in Python (**L**)
 * [Day 3](03/d03.py): basic set operations in Python (**R**), typing hints in Python (**I**) and operator module (**R**)
-* [Day 4](04/d04.py): parsing strings(**R**)
+* [Day 4](04/d04.py): parsing strings (**R**)
 * [Day 5](05/d05.py): using regular expressions (**R**) and drawing plots in matplotlib (**L**)
 * [Day 6](06/d06.py): using deques (**R**)
 * [Day 7](07/d07.py): Gauss's formula (**R**) and I got to know that statistics module is thing in Python (**L**)
@@ -31,6 +31,6 @@ Things I **L**earned, **R**evised or **I**mproved at in 2021:
 * [Day 20](20/d20.py): representing grids as dictionaries with default values (**I**)
 * [Day 21](21/d21.py): dynamic programming (**I**) and using LRU_cache from functools (**L**)
 * [Day 22](22/d22.py): a tough one again; figuring out how to think in 3D to represent cubes as ranges of points (**L**) wasn't that obvious, and I barely had contact with the inclusion–exclusion principle (**L**) before
-* [Day 23](23/d23.py): solved [part 1](23/part1.txt) of the puzzle by hand in about 5 minutes, then spent a couple of hours a day for half a week implementing the game rules for part 2, and then another hour or so to implement a simple Dijkstra search (**I**)
-* Day 24: not tried yet
-* Day 25: not tried yet
+* [Day 23](23/d23.py): solved [part 1](23/part1.txt) of the puzzle by hand in about 5 minutes, then spent a couple of hours a day for half a week implementing the game rules for part 2, and then another hour or so to implement a simple Dijkstra search (**I**) and learn how to create hashable objects in Python (**L**)
+* Day 24: Not tried yet :()
+* [Day 25](25/d25.py): using sets and hashtables to represent grids (**R**)

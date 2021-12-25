@@ -248,7 +248,7 @@ class State:
         return all(room_status)
     
     def find_moves(self):
-        possible_moves = self.find_moves_from_rooms() + self.find_moves_to_rooms()
+        possible_moves = self.find_moves_to_rooms() + self.find_moves_from_rooms()
         #if not possible_moves: print("No moves!")
         return possible_moves
 
