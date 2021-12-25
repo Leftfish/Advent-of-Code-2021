@@ -10,6 +10,44 @@
 POKOJE: 11, 12, 13, 14 (A, B, C, D)
 '''
 
+def winning_setup(rooms, amphipods):
+    rooms[0].add_amphipod(amphipods[0])
+    rooms[0].add_amphipod(amphipods[1])
+    rooms[0].add_amphipod(amphipods[2])
+    rooms[0].add_amphipod(amphipods[3])
+    rooms[1].add_amphipod(amphipods[4])
+    rooms[1].add_amphipod(amphipods[5])
+    rooms[1].add_amphipod(amphipods[6])
+    rooms[1].add_amphipod(amphipods[7])
+    rooms[2].add_amphipod(amphipods[8])
+    rooms[2].add_amphipod(amphipods[9])
+    rooms[2].add_amphipod(amphipods[10])
+    rooms[2].add_amphipod(amphipods[11])
+    rooms[3].add_amphipod(amphipods[12])
+    rooms[3].add_amphipod(amphipods[13])
+    rooms[3].add_amphipod(amphipods[14])
+    rooms[3].add_amphipod(amphipods[15])
+
+def sample_setup(rooms, amphipods):
+    rooms[0].add_amphipod(amphipods[0])
+    rooms[0].add_amphipod(amphipods[12])
+    rooms[0].add_amphipod(amphipods[13])
+    rooms[0].add_amphipod(amphipods[4])
+    rooms[1].add_amphipod(amphipods[14])
+    rooms[1].add_amphipod(amphipods[5])
+    rooms[1].add_amphipod(amphipods[8])
+    rooms[1].add_amphipod(amphipods[9])
+    rooms[2].add_amphipod(amphipods[8])
+    rooms[2].add_amphipod(amphipods[1])
+    rooms[2].add_amphipod(amphipods[6])
+    rooms[2].add_amphipod(amphipods[7])
+    rooms[3].add_amphipod(amphipods[2])
+    rooms[3].add_amphipod(amphipods[10])
+    rooms[3].add_amphipod(amphipods[3])
+    rooms[3].add_amphipod(amphipods[15])
+
+
+
 MAZE = '##############...........####.#.#.#.###  # # # # #    # # # # #    # # # # #    #########'
 
 STR_LOCS = {1: [14], 2: [15], 3: [17], 4: [19], 5: [21], 6: [23], 7: [24], 
@@ -19,7 +57,7 @@ STR_LOCS = {1: [14], 2: [15], 3: [17], 4: [19], 5: [21], 6: [23], 7: [24],
 14: [74, 61, 48, 35]}
 
 A, B, C, D = 'A', 'B', 'C', 'D'
-COPIES = 4
+ROOM_SIZE = COPIES = 4
 ALL_AMPHIPODS = [A] * COPIES + [B] * COPIES + [C] * COPIES + [D] * COPIES
 
 CORRIDORS = {1, 2, 3, 4, 5, 6, 7}
@@ -123,6 +161,9 @@ class Location:
 
     def is_empty(self):
         return not self.amphipods
+    
+    def count_amphipods(self):
+        return len(self.amphipods)
 
     def add_amphipod(self, amphipod):
         if not self.is_full():
@@ -226,6 +267,10 @@ class State:
 
         return moves_to_rooms
 
+    def is_winning(self):
+        room_status = [self.rooms[room_id].is_full() and self.rooms[room_id].has_only_proper() for room_id in self.rooms]
+        return all(room_status)
+    
     def find_moves(self):
         possible_moves = self.find_moves_from_rooms() + self.find_moves_to_rooms()
         if not possible_moves: print("No moves!")
@@ -236,63 +281,38 @@ class State:
 
     def make_move(self, move):
         mover, from_, to = move
+        cost_modifier = 1
         if from_ in self.rooms:
             cost, through = room_to_corridor[(from_, to)]
+            cost_modifier = ROOM_SIZE - self.rooms[from_].count_amphipods()
             mover = self.rooms[from_].get_next()
             self.corridors[to].add_amphipod(mover)
         elif from_ in self.corridors:
             cost, through = corridor_to_room[(from_, to)]
+            cost_modifier = ROOM_SIZE - 1 - self.rooms[from_].count_amphipods()
             mover = self.corridors[from_].get_next()
             self.rooms[to].add_amphipod(mover)
-        mover.moves += cost
-        self.update_cost(mover, cost)
-
-### TRZEBA POPRAWIĆ RUCHY Z POKOJU I DO POKOJU - LICZENIE KOSZTÓW DZIAŁA NIEPRAWIDŁOWO (NIE UWZGLĘDNIA RUCHÓW WEWNĄTRZ POKOJU)
-### dodatkowy koszt przy wyjściu/wejściu
-### gdy wychodzi: pierwszy wychodzi za 0, drugi za 1, trzeci za 2, czwarty za 3
-### gdy wchodzi: pierwszy wchodzi za 3, drugi za 2, trzeci za 1, czwarty za 0
-### ZRÓB PARĘ RUCHÓW NA PRÓBĘ
-### A POTEM DIJKSTRA ALBO A*
-
+        mover.moves += cost + cost_modifier
+        self.update_cost(mover, cost + cost_modifier)
 
 ### SETUP OF THE MAZE
 
-corridors = [Location(id) for id in range(min(CORRIDORS),max(CORRIDORS)+1)]
-rooms = [Location(id) for id in range(min(ROOMS), max(ROOMS)+1)]
-for room, category in zip(rooms, (A, B, C, D)):
-    room.categories.add(category)
-amphipods = [Amphipod(category) for _, category in enumerate(ALL_AMPHIPODS)]
+def setup(input_function):
+    corridors = [Location(id) for id in range(min(CORRIDORS),max(CORRIDORS)+1)]
+    rooms = [Location(id) for id in range(min(ROOMS), max(ROOMS)+1)]
+    for room, category in zip(rooms, (A, B, C, D)):
+        room.categories.add(category)
+    amphipods = [Amphipod(category) for category in ALL_AMPHIPODS]
+    input_function(rooms, amphipods)
+    Game = State(corridors, rooms)
+    return Game
 
-rooms[0].add_amphipod(amphipods[0])
-rooms[0].add_amphipod(amphipods[12])
-rooms[0].add_amphipod(amphipods[13])
-rooms[0].add_amphipod(amphipods[4])
-rooms[1].add_amphipod(amphipods[14])
-rooms[1].add_amphipod(amphipods[5])
-rooms[1].add_amphipod(amphipods[8])
-rooms[1].add_amphipod(amphipods[9])
-rooms[2].add_amphipod(amphipods[8])
-rooms[2].add_amphipod(amphipods[1])
-rooms[2].add_amphipod(amphipods[6])
-rooms[2].add_amphipod(amphipods[7])
-rooms[3].add_amphipod(amphipods[2])
-rooms[3].add_amphipod(amphipods[10])
-rooms[3].add_amphipod(amphipods[3])
-rooms[3].add_amphipod(amphipods[15])
-
-Game = State(corridors, rooms)
-
-
-Game.print()
-from random import choice
-Game.make_move(choice(Game.find_moves()))
+Game = setup(sample_setup)
 Game.print()
 
-
-print('Day 23 of Advent of Code!')
+'''print('Day 23 of Advent of Code!')
 print('Tests...')
 print('---------------------')
-
 print('Solution...')
-#with open('inp', mode='r') as inp:
-#    raw_data = inp.read()
+with open('inp', mode='r') as inp:
+    raw_data = inp.read()'''
