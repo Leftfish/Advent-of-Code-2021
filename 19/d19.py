@@ -153,10 +153,13 @@ def find_and_normalize(scanners: deque, debug=False) -> tuple:
                 other_beacon = overlaps[this_beacon].pop()
                 offset = (this_beacon[0]-other_beacon[0], this_beacon[1]-other_beacon[1], this_beacon[2]-other_beacon[2])
 
-                scanner_coords[rotated_scanner.id] = offset
-                new_beacons = []
-    # then apply the offset to each beacon in the scanner that is currently tested and now properly rotated
+    # curiously, the offset is also the location of the scanner that we're now merging!
 
+                scanner_coords[rotated_scanner.id] = offset
+    
+    # then apply the offset to each beacon in the scanner that is currently tested and now properly rotated
+    
+                new_beacons = []
                 for beacon in rotated_scanner.beacons:
                     x, y, z = beacon
                     ox, oy, oz = offset
