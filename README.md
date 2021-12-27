@@ -5,7 +5,7 @@ Again I'm trying to find out how far I can make it in [Advent of Code](https://a
 * 2019: 13 days
 * 2020: 25 days for the first time!
 
-I had no idea if I could devote as much time to solving puzzles as last year and if my feeble skills could hold up against this year's tasks. So far I have solved 22 out of 25 puzzles, with one of the remaining partially done and two other not touched yet. I'm planning to come back to them later.
+I had no idea if I could devote as much time to solving puzzles as last year and if my feeble skills could hold up against this year's tasks. So far I have solved 24 out of 25 puzzles. One more to go!
 
 Things I **L**earned, **R**evised or **I**mproved at in 2021:
 
@@ -27,10 +27,10 @@ Things I **L**earned, **R**evised or **I**mproved at in 2021:
 * [Day 16](16/d16.py): oooof, this was a tough one; managed to do part 1 without help - and learn a lot about recursion on the way (**L**), but only looking at another solution helped be represent the tree structure properly (**L**)
 * [Day 17](17/d17.py): using regex to extract negative integers from string (**R**)
 * [Day 18](18/d18.py): another tough day, lots of things I vaguely know about but never had a chance to implement: recursively parsing lists into binary trees (**L**), traversing trees in-order iteratively and recursively (**L**), finding predecessors and successors in a binary tree which is NOT a binary search tree (**L**)
-* Day 19: Not done :( Got it to work for the test input, but fails on the actual puzzle. I did learn a bit about vectors (**L**) along the way...
+* [Day 19](19/d19.py): done as next to last; made me learn a bit about vectors in 3D (**L**), as well as rotations and translations of sets of 3D points (**L**)
 * [Day 20](20/d20.py): representing grids as dictionaries with default values (**I**)
 * [Day 21](21/d21.py): dynamic programming (**I**) and using LRU_cache from functools (**L**)
 * [Day 22](22/d22.py): a tough one again; figuring out how to think in 3D to represent cubes as ranges of points (**L**) wasn't that obvious, and I barely had contact with the inclusion–exclusion principle (**L**) before
 * [Day 23](23/d23.py): solved [part 1](23/part1.txt) of the puzzle by hand in about 5 minutes, then spent a couple of hours a day for half a week implementing the game rules for part 2, and then another hour or so to implement a simple Dijkstra search (**I**) and learn how to create hashable objects in Python (**L**)
-* Day 24: Not tried yet :()
+* Day 24: Not tried yet :(
 * [Day 25](25/d25.py): using sets and hashtables to represent grids (**R**)
