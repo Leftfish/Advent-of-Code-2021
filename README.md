@@ -1,11 +1,11 @@
 # Advent of Code 2021
 
-Again I'm trying to find out how far I can make it in [Advent of Code](https://adventofcode.com/2021/). Results so far:
+Again I tried to find out how far I can make it in [Advent of Code](https://adventofcode.com/2021/). Results for previous editions:
 * 2018: 9 days
 * 2019: 13 days
 * 2020: 25 days for the first time!
 
-I had no idea if I could devote as much time to solving puzzles as last year and if my feeble skills could hold up against this year's tasks. So far I have solved 24 out of 25 puzzles. One more to go!
+Again, I had no idea if I could devote enough time to solving puzzles and if my feeble skills could hold up against this year's tasks. It appeared tougher than last year, but **I made it through for the second year in a row**. I have to admit that I had some serious trouble with days 16 (part 2), 19, 21 (part 2) and 24. AoC community on Reddit helped a ton! I'm particularly proud of coming up with solutions to Days 6, 14, 15 and 18 on my own!
 
 Things I **L**earned, **R**evised or **I**mproved at in 2021:
 
@@ -32,5 +32,5 @@ Things I **L**earned, **R**evised or **I**mproved at in 2021:
 * [Day 21](21/d21.py): dynamic programming (**I**) and using LRU_cache from functools (**L**)
 * [Day 22](22/d22.py): a tough one again; figuring out how to think in 3D to represent cubes as ranges of points (**L**) wasn't that obvious, and I barely had contact with the inclusion–exclusion principle (**L**) before
 * [Day 23](23/d23.py): solved [part 1](23/part1.txt) of the puzzle by hand in about 5 minutes, then spent a couple of hours a day for half a week implementing the game rules for part 2, and then another hour or so to implement a simple Dijkstra search (**I**) and learn how to create hashable objects in Python (**L**)
-* Day 24: Not tried yet :(
+* [Day 24](24/d24.xlsx): ooof, another tough nut to crack and without some writeups I would never had realized what was going on here; ended up solving it in [Excel](24/d24.xlsx) and learned a bunch about [translating code](24/d24_pseudocode.adv) (**L**) and using numbers as stacks (**L**) along the way
 * [Day 25](25/d25.py): using sets and hashtables to represent grids (**R**)
