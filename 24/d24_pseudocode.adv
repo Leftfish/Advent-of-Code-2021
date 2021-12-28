@@ -1,0 +1,87 @@
+## this is MONAD translated to Pyton-ish pseudocode
+## MONAD has this code repeated 14 times (no jumps = no loops), but we don't have to...
+## essentially: z and mod 26 acts like a stack, but using base26 (!) numbers - WOW, I wouldn't have found that one out on my own...
+## positive values added to x ensure that x will never be equal to w (since w is between 1 and 9)
+## negative values can lead to x == w; but if it is not, we will both pop and push to the stack
+## and only an empty stack means z == 1, i.e. the number is valid
+## hence: comparing a digit (stored in w) with a value popped from the stack places a constraint on the value of that digit
+
+x, y, z, w = 0, 0, 0, 0
+
+for digit in range(1...14): # repeat for digits 1-14 inclusive:
+    z = stack = []
+
+    w = next_int(1...9)
+    x = stack[-1] if stack else 0 # x is 0 just once - at digit 1 (this corresponds to mod x 26)
+
+    if digit == 1: 
+        x += 15
+    elif digit == 2:
+        x += 10
+    elif digit == 3:
+        x += 12
+    elif digit == 4:
+        x += 10
+    elif digit == 5:
+        x += 14
+    elif digit == 6:
+        stack.pop() # this is div z 26 - it takes away the last base-26 digit from z, i.e. makes the stack smaller!
+        x += -11
+    elif digit == 7:
+        x += 10
+    elif digit == 8:
+        stack.pop()
+        x += -16
+    elif digit == 9:
+        stack.pop()
+        x += -9
+    elif digit == 10:
+        x += 11
+    elif digit == 11:
+        stack.pop()
+        x += -8
+    elif digit == 12:
+        stack.pop()
+        x += -8
+    elif digit == 13:
+        stack.pop()
+        x += -10
+    elif digit == 14:
+        stack.pop()
+        x += -9 
+    
+    if x != w: # this will be met in two cases: a) we added to x (because with double-digit ints added to x and w in 1..9, always x > 9) or b) we subtracted and x == digit (in w)
+               # to make the stack smaller, i.e. make this condition NOT fulfilled, we have to constrain the input digit stored in w
+
+        y = w # offset and push to stack (i.e. stack grows) --> but we must pop whenever possible to make this work; if no. of pops != no. of pushes, z != 0 (the stack is not empty)
+
+        if digit == 1:
+            y += 13
+        elif digit == 2:
+            y += 16
+        elif digit == 3:
+            y += 2   
+        elif digit == 4:
+            y += 8
+        elif digit == 5:
+            y += 11
+        elif digit == 6:
+            y += 6 
+        elif digit == 7
+            y += 12
+        elif digit == 8:
+            y += 2
+        elif digit == 9:
+            y += 2
+        elif digit == 10:
+            y += 15
+        elif digit == 11:
+            y += 1
+        elif digit == 12:
+            y += 10
+        elif digit == 13:
+            y += 14    
+        elif digit == 14:
+            y += 10
+            
+        stack.append(y)
