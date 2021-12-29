@@ -93,6 +93,21 @@ room_to_corridor = { #(from, to): (moves, [through what])
     (14,7): (3, [6,7])
 }
 
+room_to_room = {
+    (11,12): 3, 
+    (11,13): 5,
+    (11,14): 7,
+    (12,11): 3, 
+    (12,13): 3,
+    (12,14): 5,
+    (13,11): 5, 
+    (13,12): 3,
+    (13,14): 3,
+    (14,11): 7, 
+    (14,12): 5,
+    (14,13): 3
+}
+
 class Location:
     def __init__(self, id):
         self.id = id
@@ -155,6 +170,7 @@ class State:
         self.rooms = {room.id: room.copy() for room in rooms}
         self.cost = cost
         self.previous = None
+        self.distance_score = self.get_distance_score()
 
     def __repr__(self):
         return 'S' + str(self.cost)
@@ -163,16 +179,42 @@ class State:
         return hash(self.generate_map())
 
     def __eq__(self, __o: object) -> bool:
-        return self.generate_map() == __o.generate_map()
+        if isinstance(__o, State):
+            return self.generate_map() == __o.generate_map()
+        return NotImplemented
+
+    def get_distance_score(self):
+        score = 0
+        for corridor_id, corridor in self.corridors.items():
+            for amphipod in corridor.amphipods:
+                proper_room = categories_to_rooms[amphipod.category]
+                moves = corridor_to_room[(corridor_id, proper_room)][0]
+                score += MOVE_COSTS[amphipod.category] * moves
+
+        for room_id, room in self.rooms.items():
+            for amphipod in room.amphipods:
+                proper_room = categories_to_rooms[amphipod.category]
+                if room_id != proper_room:
+                    moves = room_to_room[(room_id, proper_room)]
+                    score += MOVE_COSTS[amphipod.category] * moves
+
+        return score
 
     def __lt__(self, __o: object) -> bool:
-        return self.cost < __o.cost
+        if isinstance(__o, State):
+            if self.distance_score < __o.distance_score:
+                return True
+            elif self.cost < __o.cost:
+                return True
+            return False
+        return NotImplemented
 
     def copy(self):
         copied = State([], [], 0)
         copied.corridors = {corridor_id: self.corridors[corridor_id].copy() for corridor_id in self.corridors}
         copied.rooms = {room_id: self.rooms[room_id].copy() for room_id in self.rooms}
         copied.cost = self.cost
+        copied.distance_score = self.distance_score
         copied.previous = self
         return copied
 
@@ -263,13 +305,16 @@ class State:
             cost_modifier = ROOM_SIZE - self.rooms[from_].count_amphipods()
             mover = self.rooms[from_].get_next()
             self.corridors[to].add_amphipod(mover)
+            self.distance_score += MOVE_COSTS[mover.category] * cost
         elif from_ in self.corridors:
             cost, through = corridor_to_room[(from_, to)]
             cost_modifier = ROOM_SIZE - 1 - self.rooms[to].count_amphipods()
             mover = self.corridors[from_].get_next()
             self.rooms[to].add_amphipod(mover)
+            self.distance_score -= MOVE_COSTS[mover.category] * cost
         mover.moves += cost + cost_modifier
         self.update_cost(mover, cost + cost_modifier)
+        
 
 ### SETUP OF THE MAZE
 
@@ -281,6 +326,7 @@ def setup(input_function):
     amphipods = [Amphipod(category) for category in ALL_AMPHIPODS]
     input_function(rooms, amphipods)
     Game = State(corridors, rooms)
+    print(Game.distance_score)
     return Game
 
 def play(start):
@@ -295,7 +341,7 @@ def play(start):
             print(f'After {big_iter_counter} iterations the queue has {queue.qsize()} states left...')
         current = queue.get()
         if current.is_winning():
-            print(f"Current is winning: {current.cost}")
+            print(f"Current is winning: {current.cost}.")
             current.print()
             if current not in winning or (current in winning and winning[current] > current.cost):
                 winning[current] = current.cost
@@ -365,9 +411,34 @@ def actual_setup(rooms, amphipods):
     rooms[3].add_amphipod(amphipods[3])
     rooms[3].add_amphipod(amphipods[11])
 
+def winning_setup(rooms, amphipods):
+    rooms[0].add_amphipod(amphipods[0])
+    rooms[0].add_amphipod(amphipods[1])
+    rooms[0].add_amphipod(amphipods[2])
+    rooms[0].add_amphipod(amphipods[3])
+    rooms[1].add_amphipod(amphipods[4])
+    rooms[1].add_amphipod(amphipods[5])
+    rooms[1].add_amphipod(amphipods[6])
+    rooms[1].add_amphipod(amphipods[7])
+    rooms[2].add_amphipod(amphipods[8])
+    rooms[2].add_amphipod(amphipods[9])
+    rooms[2].add_amphipod(amphipods[10])
+    rooms[2].add_amphipod(amphipods[11])
+    rooms[3].add_amphipod(amphipods[12])
+    rooms[3].add_amphipod(amphipods[13])
+    rooms[3].add_amphipod(amphipods[14])
+    rooms[3].add_amphipod(amphipods[15])
+
 print('Day 23 of Advent of Code!')
 print('Solution...')
 Game = setup(actual_setup)
 Game.print()
 winning = play(Game)
 print_solution(winning)
+
+'''
+przejdź przez pokoje.
+jeśli w pokoju jest amphipod
+sprawdź jego dystans do swojego pokoiku
+
+'''
