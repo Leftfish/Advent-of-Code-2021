@@ -435,10 +435,3 @@ Game = setup(actual_setup)
 Game.print()
 winning = play(Game)
 print_solution(winning)
-
-'''
-przejdź przez pokoje.
-jeśli w pokoju jest amphipod
-sprawdź jego dystans do swojego pokoiku
-
-'''
