@@ -326,7 +326,6 @@ def setup(input_function):
     amphipods = [Amphipod(category) for category in ALL_AMPHIPODS]
     input_function(rooms, amphipods)
     Game = State(corridors, rooms)
-    print(Game.distance_score)
     return Game
 
 def play(start):
