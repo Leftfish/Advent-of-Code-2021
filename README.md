@@ -7,7 +7,7 @@ Again I tried to find out how far I can make it in [Advent of Code](https://adve
 
 Again, I had no idea if I could devote enough time to solving puzzles and if my feeble skills could hold up against this year's tasks. It appeared tougher than last year, but **I made it through for the second year in a row**. I have to admit that I had some serious trouble with days 16 (part 2), 19, 21 (part 2) and 24. AoC community on Reddit helped a ton! I'm particularly proud of coming up with solutions to Days 6, 14, 15 and 18 on my own!
 
-Things I **L**earned, **R**evised or **I**mproved at in 2021:
+Here are the things I **L**earned, **R**evised or **I**mproved at in 2021:
 
 * [Day 1](01/d01.py): using zip (**R**) and list comprehensions in Python (**R**)
 * [Day 2](02/d02.py): using complex numbers in Python (**L**)
