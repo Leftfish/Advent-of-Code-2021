@@ -2,3 +2,4 @@ _not-done/
 tools/
 19/
 in*
+*.gitignore
